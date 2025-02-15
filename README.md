@@ -5,7 +5,7 @@ An undergraduate thesis project by BS Computer Science Students:
 
 Dela Cruz, Harvy 
 
-Gonzaga, Darrem 
+Gonzaga, Darrem Maganda
 
 Moleño, Kurt Patrick Wes
 
