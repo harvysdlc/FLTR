@@ -38,10 +38,10 @@ public class Registration extends AppCompatActivity {
             String gender = genderSpinner.getSelectedItem().toString();
 
             if (name.isEmpty()) {
-                Toast.makeText(Registration.this, "Please enter your name.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Registration.this, "Please enter your name or nickname.", Toast.LENGTH_SHORT).show();
             } else {
-                // Proceed with the data
-                Toast.makeText(Registration.this, "Name: " + name + "\nGender: " + gender, Toast.LENGTH_LONG).show();
+                // show name and gender in a small box hehe
+                //Toast.makeText(Registration.this, "Name: " + name + "\nGender: " + gender, Toast.LENGTH_LONG).show();
                 @SuppressLint("CutPasteId") Button proceed = findViewById(R.id.proceedButton);
                 proceed.setOnClickListener(view -> {
                     Intent intent = new Intent(Registration.this, ScreenMain.class);
