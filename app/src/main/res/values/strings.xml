@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">FLTR</string>
     <string name="tap_to_start">TAP TO START</string>
+    <string name="gender">Gender:</string>
+    <string name="enter_your_name">Enter your name</string>
+    <string name="proceed">Proceed</string>
+    <string name="enter_name">Enter Name:</string>
 </resources>

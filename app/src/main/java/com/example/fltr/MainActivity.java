@@ -12,7 +12,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
-    private Button button_start;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,10 +20,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Find the button using the correct ID reference
-        button_start = findViewById(R.id.button_start);
+        Button button_start = findViewById(R.id.button_start);
 
         button_start.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, ScreenMain.class);
+            Intent intent = new Intent(MainActivity.this, Registration.class);
             startActivity(intent);
         });
 
