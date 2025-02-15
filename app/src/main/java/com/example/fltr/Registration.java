@@ -40,7 +40,7 @@ public class Registration extends AppCompatActivity {
             if (name.isEmpty()) {
                 Toast.makeText(Registration.this, "Please enter your name or nickname.", Toast.LENGTH_SHORT).show();
             } else {
-                // show name and gender in a small box hehe
+                // show name and gender in a small box here
                 //Toast.makeText(Registration.this, "Name: " + name + "\nGender: " + gender, Toast.LENGTH_LONG).show();
                 @SuppressLint("CutPasteId") Button proceed = findViewById(R.id.proceedButton);
                 proceed.setOnClickListener(view -> {
