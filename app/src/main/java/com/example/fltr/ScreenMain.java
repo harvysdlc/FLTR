@@ -1,16 +1,11 @@
 package com.example.fltr;
 
 import android.Manifest;
-import android.content.ContentValues;
 import android.content.pm.PackageManager;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.widget.Button;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
@@ -22,16 +17,14 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Objects;
 
 public class ScreenMain extends AppCompatActivity {
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
     private MediaRecorder mediaRecorder;
     private MediaPlayer mediaPlayer;
-    private String audioFilePath;
     private boolean isRecording = false;
+    private File tempFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,50 +57,40 @@ public class ScreenMain extends AppCompatActivity {
     }
 
     private void startRecording() {
-        audioFilePath = getAudioFilePath();
-
-        mediaRecorder = new MediaRecorder();
-        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4); // Use MPEG_4 for audio recording
-        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC); // Use AAC encoder
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            try {
-                mediaRecorder.setOutputFile(getContentResolver().openFileDescriptor(Uri.parse(audioFilePath), "w").getFileDescriptor());
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        } else {
-            mediaRecorder.setOutputFile(audioFilePath);
-        }
         try {
+            tempFile = File.createTempFile("temp_audio", ".m4a", getCacheDir());
+            tempFile.deleteOnExit();
+
+            mediaRecorder = new MediaRecorder();
+            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+            mediaRecorder.setOutputFile(tempFile.getAbsolutePath());
+
             mediaRecorder.prepare();
             mediaRecorder.start();
             isRecording = true;
         } catch (IOException e) {
             e.printStackTrace();
+            Toast.makeText(this, "Failed to start recording", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void stopRecording() {
         if (mediaRecorder != null) {
             try {
-                showAndPlayRecord();
                 mediaRecorder.stop();
+                mediaRecorder.release();
+                mediaRecorder = null;
+                isRecording = false;
+                Toast.makeText(this, "Recording stopped", Toast.LENGTH_SHORT).show();
+
+                // Play the recording immediately after stopping
+                playRecording();
             } catch (Exception e) {
                 e.printStackTrace();
+                Toast.makeText(this, "Failed to stop recording", Toast.LENGTH_SHORT).show();
             }
-            mediaRecorder.release();
-            mediaRecorder = null;
-            isRecording = false;
-            Toast.makeText(this, "Recording stopped", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void showAndPlayRecord() {
-        if (Objects.nonNull(audioFilePath)) {
-            playRecording();
-        } else {
-            Toast.makeText(this, "Record error", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -122,36 +105,14 @@ public class ScreenMain extends AppCompatActivity {
                 .setUsage(AudioAttributes.USAGE_MEDIA)
                 .build());
         try {
-            mediaPlayer.setDataSource(audioFilePath);
+            mediaPlayer.setDataSource(tempFile.getAbsolutePath());
             mediaPlayer.prepare();
             mediaPlayer.start();
+            Toast.makeText(this, "Playing recording", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(this, "Error playing audio", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private String getAudioFilePath() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            ContentValues values = new ContentValues();
-            values.put(MediaStore.Audio.Media.DISPLAY_NAME, "audio_record.m4a");
-            values.put(MediaStore.Audio.Media.MIME_TYPE, "audio/mp4");
-            values.put(MediaStore.Audio.Media.RELATIVE_PATH, Environment.DIRECTORY_MUSIC);
-
-            Uri uri = getContentResolver().insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values);
-            if (uri != null) {
-                return uri.toString();
-            }
-        } else {
-            String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getAbsolutePath();
-            String filename = "audio_record.m4a";
-            File directory = new File(path);
-            if (!directory.exists()) {
-                directory.mkdirs();
-            }
-            return path + "/" + filename;
-        }
-        return null;
     }
 
     @Override
@@ -163,6 +124,22 @@ public class ScreenMain extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mediaRecorder != null) {
+            mediaRecorder.release();
+            mediaRecorder = null;
+        }
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+        if (tempFile != null) {
+            tempFile.delete();
         }
     }
 }

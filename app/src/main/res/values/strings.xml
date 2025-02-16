@@ -6,4 +6,8 @@
     <string name="proceed">Proceed</string>
     <string name="enter_name">Enter Name:</string>
     <string name="microphone">Microphone</string>
+    <string name="logo">logo</string>
+    <string name="fltr">FLTR</string>
+    <string name="speech_to_text">SPEECH-TO-TEXT</string>
+    <string name="tap">Tap to Start</string>
 </resources>
