@@ -10,4 +10,6 @@
     <string name="fltr">FLTR</string>
     <string name="speech_to_text">SPEECH-TO-TEXT</string>
     <string name="tap">Tap to Start</string>
+    <string name="space" />
+    <string name="start">.</string>
 </resources>
