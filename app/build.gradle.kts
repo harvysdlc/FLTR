@@ -32,7 +32,9 @@ android {
 }
 
 dependencies {
-
+    implementation(libs.tensorflow.lite)
+    implementation (libs.ffmpeg.kit.full)
+    implementation(files("libs/tarsosDSP-android-latest.jar"))
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
