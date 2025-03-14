@@ -1,6 +1,7 @@
 package com.example.fltr;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
@@ -26,6 +27,7 @@ public class ScreenMain extends AppCompatActivity {
     private boolean isRecording = false;
     private File tempFile;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
