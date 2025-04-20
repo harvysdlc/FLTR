@@ -1,32 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ScreenMain">
+    android:padding="16dp"
+    tools:context="com.example.fltr.ScreenMain">
 
-    <Button
-        android:id="@+id/microphoneButton"
+    <!-- 1) Prediction text -->
+    <TextView
+        android:id="@+id/transcribeView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Predicted label:"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="32dp"/>
+
+    <!-- 2) MFCC visualizer -->
+    <com.example.fltr.MfccVisualizerView
+        android:id="@+id/mfccView"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:background="#222"
+        app:layout_constraintTop_toBottomOf="@id/transcribeView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- 3) Frame count overlay -->
+    <TextView
+        android:id="@+id/frameCountView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/microphone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.848" />
+        android:text="Frames: 0"
+        android:textColor="#FFFFFF"
+        android:background="#88000000"
+        android:padding="4dp"
+        app:layout_constraintTop_toTopOf="@id/mfccView"
+        app:layout_constraintEnd_toEndOf="@id/mfccView"
+        android:layout_margin="8dp"/>
 
-    <TextView
-        android:id="@+id/transcriptionTextView"
-        android:layout_width="126dp"
-        android:layout_height="45dp"
-        android:layout_marginBottom="124dp"
-        app:layout_constraintBottom_toTopOf="@+id/microphoneButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
+    <!-- 4) Record button -->
+    <Button
+        android:id="@+id/record"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/microphone"
+        android:textAllCaps="false"
+        app:layout_constraintTop_toBottomOf="@id/mfccView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.958" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp"/>
+
+    <!-- Center guideline for bottom buttons -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineCenter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintGuide_percent="0.5"
+        android:orientation="vertical"/>
+
+    <!-- 5) Toggle Full/Trimmed MFCC -->
+    <Button
+        android:id="@+id/toggleView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Show Full MFCC"
+        android:textAllCaps="false"
+        app:layout_constraintTop_toBottomOf="@id/record"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guidelineCenter"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"/>
+
+    <!-- 6) Save Recording -->
+    <Button
+        android:id="@+id/saveBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Save Recording"
+        android:textAllCaps="false"
+        app:layout_constraintTop_toBottomOf="@id/record"
+        app:layout_constraintStart_toEndOf="@id/guidelineCenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="8dp"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

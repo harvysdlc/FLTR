@@ -8,6 +8,7 @@ pluginManagement {
             }
         }
         mavenCentral()
+        maven("https://jitpack.io")
         gradlePluginPortal()
     }
 }
@@ -16,9 +17,13 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven("https://jitpack.io")
     }
 }
 
 rootProject.name = "FLTR"
 include(":app")
- 
+
+include(":app", ":tarsosdsp")
+project(":tarsosdsp").projectDir = file("TarsosDSP/core")
+
