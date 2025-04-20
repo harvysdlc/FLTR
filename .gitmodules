@@ -1,0 +1,3 @@
+[submodule "tarsosdsp"]
+	path = tarsosdsp
+	url = https://github.com/JorenSix/TarsosDSP.git
