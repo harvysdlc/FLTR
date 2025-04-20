@@ -1,5 +1,5 @@
 [versions]
-agp = "8.7.3"
+agp = "8.8.0"
 ffmpegKitFull = "6.0"
 githubTarsosdsp = "2.5"
 junit = "4.13.2"
