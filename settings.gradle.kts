@@ -24,6 +24,6 @@ dependencyResolutionManagement {
 rootProject.name = "FLTR"
 include(":app")
 
-include(":app", ":tarsosdsp")
-project(":tarsosdsp").projectDir = file("TarsosDSP/core")
+include(":app")
+//project(":tarsosdsp").projectDir = file("TarsosDSP/core")
 

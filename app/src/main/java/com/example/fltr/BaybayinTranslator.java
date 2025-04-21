@@ -119,6 +119,7 @@ public class BaybayinTranslator {
         baybayinMap.put("h", "ᜑ᜔");
         baybayinMap.put("t", "ᜆ᜔");
         baybayinMap.put("ng", "ᜅ᜔");
+        baybayinMap.put("w", "ᜏ᜔");
 
 
     }

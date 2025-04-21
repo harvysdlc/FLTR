@@ -38,7 +38,7 @@ dependencies {
     implementation("org.tensorflow:tensorflow-lite-gpu:2.13.0") // optional for GPU inference
     implementation("org.tensorflow:tensorflow-lite-select-tf-ops:2.13.0")
     implementation("com.github.wendykierp:JTransforms:3.1") // MFCC support
-    implementation(project(":tarsosdsp"))
+
     implementation(libs.ffmpeg.kit.full)
     implementation(libs.appcompat)
     implementation(libs.material)
