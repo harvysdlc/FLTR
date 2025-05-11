@@ -1,63 +1,34 @@
 package com.example.fltr;
 
 import android.content.Context;
-import android.os.Environment;
-import android.widget.Toast;
+import android.media.MediaScannerConnection;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 public class FLTRFileUtils {
-
     private final Context context;
 
     public FLTRFileUtils(Context context) {
-        this.context = context.getApplicationContext();
+        this.context = context;
     }
 
-    /**
-     * Save raw PCM data as a WAV file into the emulator's Downloads directory.
-     *
-     * @param pcmData    16‑bit little‑endian PCM data
-     * @param sampleRate sample rate (e.g. 44100)
-     */
     public void saveTrimmedRecording(byte[] pcmData, int sampleRate) {
-        try {
-            // 1) Convert byte[] → short[]
-            short[] pcmShorts = new short[pcmData.length / 2];
-            ByteBuffer.wrap(pcmData)
-                    .order(ByteOrder.LITTLE_ENDIAN)
-                    .asShortBuffer()
-                    .get(pcmShorts);
+        File outFile = new File(context.getExternalFilesDir(null),
+                "recording_" + System.currentTimeMillis() + ".pcm");
+        try (FileOutputStream fos = new FileOutputStream(outFile)) {
+            fos.write(pcmData);
+            fos.flush();
+            Log.d("FLTRFileUtils", "Saved to: " + outFile.getAbsolutePath());
 
-            // 2) Convert to WAV bytes
-            byte[] wavData = WAVUtil.convertToWav(pcmShorts, sampleRate);
-
-            // 3) Build output file path
-            String fileName = "recording_" + System.currentTimeMillis() + ".wav";
-            File downloads = Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DOWNLOADS);
-            if (!downloads.exists()) downloads.mkdirs();
-            File outFile = new File(downloads, fileName);
-
-            // 4) Write to disk
-            try (FileOutputStream fos = new FileOutputStream(outFile)) {
-                fos.write(wavData);
-                fos.flush();
-            }
-
-            Toast.makeText(context,
-                    "Saved WAV to: " + outFile.getAbsolutePath(),
-                    Toast.LENGTH_LONG).show();
-
+            // Let media scanner index it (optional)
+            MediaScannerConnection.scanFile(context,
+                    new String[]{outFile.getAbsolutePath()},
+                    null, null);
         } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(context,
-                    "Failed to save recording: " + e.getMessage(),
-                    Toast.LENGTH_LONG).show();
+            Log.e("FLTRFileUtils", "Error saving PCM file", e);
         }
     }
 }

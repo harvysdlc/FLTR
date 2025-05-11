@@ -39,7 +39,6 @@ dependencies {
     implementation("org.tensorflow:tensorflow-lite-select-tf-ops:2.13.0")
     implementation("com.github.wendykierp:JTransforms:3.1") // MFCC support
 
-    implementation(libs.ffmpeg.kit.full)
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
