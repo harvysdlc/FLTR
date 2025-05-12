@@ -1,76 +1,89 @@
 package com.example.fltr;
 
+import android.util.Log;
+
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.io.UniversalAudioInputStream;
+import be.tarsos.dsp.io.TarsosDSPAudioFormat;
+import be.tarsos.dsp.mfcc.MFCC;
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.AudioProcessor;
+
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import be.tarsos.dsp.AudioEvent;
-import be.tarsos.dsp.mfcc.MFCC;
-import be.tarsos.dsp.util.fft.FFT;
-import be.tarsos.dsp.io.TarsosDSPAudioFormat;
-
 public class MFCCExtractor {
+    private static final int SAMPLE_RATE = 44100;
+    private static final int FFT_SIZE = 2048;
+    private static final int HOP_SIZE = 512;
+    private static final int NUM_MFCC = 13;
+    private static final int NUM_MEL_BANDS = 40;
+    private static final int TARGET_NUM_FRAMES = 177;  // For LSTM: [1,177,13]
 
-    public static float[][] extractMFCC(short[] audioData, int sampleRate) {
-        final int bufferSize = 1024;
-        final int bufferOverlap = 512;
+    public static float[][] extractMFCCs(short[] pcmData) {
+        Log.d("MFCCExtractor", "Input PCM length: " + pcmData.length);
 
-        // Return early if input is too short
-        if (audioData == null || audioData.length < bufferSize) {
-            System.out.println("Audio too short for MFCC extraction.");
-            return null;
+        if (pcmData == null || pcmData.length < FFT_SIZE) {
+            Log.e("MFCCExtractor", "PCM too short for MFCC extraction.");
+            return new float[0][0];
         }
 
-        // Convert short[] to float[] in the range [-1.0, 1.0]
-        float[] floatData = new float[audioData.length];
-        for (int i = 0; i < audioData.length; i++) {
-            floatData[i] = audioData[i] / 32768f;
+        // Convert short[] to byte[] (little-endian)
+        byte[] byteData = new byte[pcmData.length * 2];
+        for (int i = 0; i < pcmData.length; i++) {
+            byteData[2 * i] = (byte) (pcmData[i] & 0xFF);           // LSB
+            byteData[2 * i + 1] = (byte) ((pcmData[i] >> 8) & 0xFF); // MSB
         }
 
+        // Prepare TarsosDSP format and stream
+        TarsosDSPAudioFormat format = new TarsosDSPAudioFormat(
+                SAMPLE_RATE, 16, 1, true, false); // PCM signed, little-endian
+
+        ByteArrayInputStream bais = new ByteArrayInputStream(byteData);
+        UniversalAudioInputStream audioStream = new UniversalAudioInputStream(bais, format);
+        AudioDispatcher dispatcher = new AudioDispatcher(audioStream, FFT_SIZE, HOP_SIZE);
+
+        // Initialize MFCC processor
+        MFCC mfccProcessor = new MFCC(FFT_SIZE, SAMPLE_RATE, NUM_MFCC, NUM_MEL_BANDS, 300, SAMPLE_RATE / 2);
         List<float[]> mfccList = new ArrayList<>();
-        MFCC mfccProcessor = new MFCC(bufferSize, sampleRate, 13, 40, 300, 8000);
-        FFT fft = new FFT(bufferSize);
 
-        TarsosDSPAudioFormat format = new TarsosDSPAudioFormat(sampleRate, 16, 1, true, false);
-
-        for (int i = 0; i < floatData.length - bufferSize; i += bufferSize - bufferOverlap) {
-            float[] buffer = new float[bufferSize];
-            System.arraycopy(floatData, i, buffer, 0, bufferSize);
-
-            float[] windowed = applyHammingWindow(buffer);
-            fft.forwardTransform(windowed);
-
-            // Allocate non-null arrays to hold FFT results
-            float[] magnitude = new float[bufferSize / 2];
-            float[] phase = new float[bufferSize / 2];
-            fft.modulus(windowed, phase); // Proper usage with non-null arrays
-
-            AudioEvent event = new AudioEvent(format);
-            event.setFloatBuffer(windowed); // Use processed buffer
-
-            mfccProcessor.process(event);
-            float[] mfccs = mfccProcessor.getMFCC();
-
-            if (mfccs != null) {
-                float[] copy = new float[mfccs.length];
-                System.arraycopy(mfccs, 0, copy, 0, mfccs.length);
-                mfccList.add(copy);
+        // Attach processors
+        dispatcher.addAudioProcessor(mfccProcessor);
+        dispatcher.addAudioProcessor(new AudioProcessor() {
+            @Override
+            public boolean process(AudioEvent audioEvent) {
+                float[] mfccs = mfccProcessor.getMFCC();
+                if (mfccs != null) {
+                    mfccList.add(mfccs.clone());
+                }
+                return true;
             }
-        }
+
+            @Override
+            public void processingFinished() {
+                // No-op
+            }
+        });
+
+        // Run dispatcher (blocking)
+        dispatcher.run();
+
+        Log.d("MFCCExtractor", "Extracted MFCC frames: " + mfccList.size());
 
         if (mfccList.isEmpty()) {
-            System.out.println("No MFCC frames were extracted.");
-            return null;
+            Log.e("MFCCExtractor", "No MFCCs extracted.");
+            return new float[0][0];
         }
 
-        System.out.println("Generated MFCC frames: " + mfccList.size());
-        return mfccList.toArray(new float[0][0]);
-    }
-
-    private static float[] applyHammingWindow(float[] buffer) {
-        int N = buffer.length;
-        for (int n = 0; n < N; n++) {
-            buffer[n] *= 0.54f - 0.46f * Math.cos((2 * Math.PI * n) / (N - 1));
+        // Final MFCC output with padding/truncation
+        float[][] mfccOutput = new float[TARGET_NUM_FRAMES][NUM_MFCC];
+        int copyLen = Math.min(TARGET_NUM_FRAMES, mfccList.size());
+        for (int i = 0; i < copyLen; i++) {
+            System.arraycopy(mfccList.get(i), 0, mfccOutput[i], 0, NUM_MFCC);
         }
-        return buffer;
+
+        Log.d("MFCCExtractor", "Final MFCC shape: [" + mfccOutput.length + "][" + NUM_MFCC + "]");
+        return mfccOutput;
     }
 }

@@ -1,7 +1,6 @@
 package com.example.fltr;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
@@ -20,6 +19,7 @@ public class AudioEngine {
 
     private boolean isRecording;
     private RecordingCallback callback;
+
     private short[] lastTrimmedPcm;
 
     public interface RecordingCallback {
@@ -86,9 +86,19 @@ public class AudioEngine {
 
         short[] normalized = normalize(rawPcm);
         short[] trimmed = trimSilenceStart(normalized);
+
+        Log.d("AudioEngine", "Raw PCM length: " + rawPcm.length);
+        Log.d("AudioEngine", "Normalized length: " + normalized.length);
+        Log.d("AudioEngine", "Trimmed length: " + trimmed.length);
+
+        if (trimmed.length < 1024) {
+            callback.onError(new IllegalStateException("Trimmed audio too short."));
+            return;
+        }
+
         lastTrimmedPcm = trimmed;
 
-        float[][] mfcc = MFCCExtractor.extractMFCC(trimmed, SAMPLE_RATE);
+        float[][] mfcc = MFCCExtractor.extractMFCCs(trimmed);
         if (mfcc == null || mfcc.length == 0) {
             callback.onError(new IllegalStateException("MFCC extraction returned empty."));
         } else {
