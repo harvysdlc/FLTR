@@ -83,7 +83,7 @@ public class MfccVisualizerView extends View {
         float cellHeight = (float) (getHeight() - topMargin - bottomMargin) / nMfcc;
 
         // Draw MFCC heatmap: time on X, coeff on Y
-        // CORRECTED: now time is properly on X-axis, coefficients on Y-axis
+        // FLIPPED: C0 now at the bottom (highest Y value)
         for (int coeff = 0; coeff < nMfcc; coeff++) {
             for (int frame = 0; frame < nFrames; frame++) {
                 float val = mfccData[coeff][frame];
@@ -91,9 +91,10 @@ public class MfccVisualizerView extends View {
                 int color = Color.HSVToColor(new float[]{240f - norm * 240f, 1f, 1f});
                 paint.setColor(color);
 
-                // X = time/frame position, Y = coefficient position
+                // X = time/frame position
+                // Y = coefficient position (flipped: nMfcc-coeff-1)
                 float left = leftMargin + frame * cellWidth;
-                float top = topMargin + coeff * cellHeight;
+                float top = topMargin + (nMfcc - coeff - 1) * cellHeight;
                 canvas.drawRect(left, top, left + cellWidth, top + cellHeight, paint);
             }
         }
@@ -105,9 +106,11 @@ public class MfccVisualizerView extends View {
                     leftMargin + frame * cellWidth, getHeight() - 10, textPaint);
         }
 
-        // Label Y-axis with MFCC coefficient index
+        // Label Y-axis with MFCC coefficient index (flipped)
         for (int coeff = 0; coeff < nMfcc; coeff++) {
-            canvas.drawText("C" + coeff, 5, topMargin + coeff * cellHeight + 20, labelPaint);
+            // Use (nMfcc - coeff - 1) to flip the position
+            canvas.drawText("C" + coeff, 5,
+                    topMargin + (nMfcc - coeff - 1) * cellHeight + 20, labelPaint);
         }
 
         // Title
