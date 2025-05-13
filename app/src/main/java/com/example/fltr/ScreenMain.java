@@ -41,7 +41,7 @@ public class ScreenMain extends AppCompatActivity {
     private short[] audioBuffer = new short[RECORDING_LENGTH];
     private Button recordButton;
     private Button saveButton;
-
+    private TextView rtfView;
 
     private TextView resultView;
     private Interpreter tflite;
@@ -57,6 +57,7 @@ public class ScreenMain extends AppCompatActivity {
         recordButton = findViewById(R.id.record);
         resultView = findViewById(R.id.transcribeView);
         mfccView = findViewById(R.id.mfccView);
+        rtfView = findViewById(R.id.rtfView);
 
 
 
@@ -93,6 +94,10 @@ public class ScreenMain extends AppCompatActivity {
             @Override
 
             public void onRecordingFinished(float[][] mfcc) {
+
+                long startTime = System.currentTimeMillis();  // ⏱️ Start timing
+
+
                 // Transpose MFCC from [177][13] to [13][177]
                 int timeSteps = mfcc.length;
                 int mfccCount = mfcc[0].length;
@@ -164,7 +169,23 @@ public class ScreenMain extends AppCompatActivity {
                 final int bestIdx = argmax(confidences);
                 final float confidence = confidences[bestIdx];
 
+
+                // ⏱️ End timing
+                long endTime = System.currentTimeMillis();
+                float processingTimeSec = (endTime - startTime) / 1000f;
+
+                // 🎧 Estimate audio length from frame count
+                float audioDurationSec = timeSteps * 512f / 44100f;
+
+                // ✅ Compute RTF
+                float rtf = processingTimeSec / audioDurationSec;
+
                 runOnUiThread(() -> {
+                    rtfView.setText(
+                            "Audio Duration: " + String.format("%.2f", audioDurationSec) +
+                                    "\nProcessing TIme: " + String.format("%.2f", processingTimeSec) +
+                                    "\nRTF: " + String.format("%.2f", rtf)
+                    );
                     mfccView.setMfccData(displayMfcc, 44100,  512 );
                     resultView.setText("Prediction: " + getLabel(bestIdx) + "\nConfidence: " + confidence);
                     recordButton.setText("Record");
