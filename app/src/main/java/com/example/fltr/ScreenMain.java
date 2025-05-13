@@ -102,7 +102,7 @@ public class ScreenMain extends AppCompatActivity {
                     }
                 }
                 Log.d("ScreenMain","Transposed MFCC shape: [" + transposed.length + "][" + transposed[0].length + "]");
-                mfccView.setMfccData(mfcc, 44100,  512 );
+                mfccView.setMfccData(transposed, 44100,  512 );
 
 
 

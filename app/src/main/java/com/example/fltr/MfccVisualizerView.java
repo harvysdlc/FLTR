@@ -12,10 +12,12 @@ public class MfccVisualizerView extends View {
     private float[][] mfccData;  // Shape: [n_mfcc][n_frames]
     private int sampleRate = 44100;
     private int hopLength = 512;
-    private float minVal = -100f, maxVal = 100f; // dB scale range (adjust as needed)
+    private float minVal = -100f, maxVal = 100f; // dB range
 
     private Paint paint = new Paint();
     private Paint textPaint = new Paint();
+    private Paint labelPaint = new Paint();
+    private Paint framePaint = new Paint();
 
     public MfccVisualizerView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -29,9 +31,19 @@ public class MfccVisualizerView extends View {
 
     private void init() {
         paint.setStyle(Paint.Style.FILL);
+
         textPaint.setColor(Color.WHITE);
         textPaint.setTextSize(28f);
         textPaint.setAntiAlias(true);
+
+        labelPaint.setColor(Color.LTGRAY);
+        labelPaint.setTextSize(20f);
+        labelPaint.setAntiAlias(true);
+
+        framePaint.setColor(Color.rgb(50, 50, 0));
+        framePaint.setTextSize(24f);
+        framePaint.setAntiAlias(true);
+        framePaint.setTextAlign(Paint.Align.RIGHT);
     }
 
     public void setMfccData(float[][] data, int sampleRate, int hopLength) {
@@ -59,33 +71,49 @@ public class MfccVisualizerView extends View {
 
         if (mfccData == null || mfccData.length == 0) return;
 
-        int nMfcc = mfccData.length;
-        int nFrames = mfccData[0].length;
+        int nMfcc = mfccData.length;       // 13
+        int nFrames = mfccData[0].length;  // ~177
 
-        float cellWidth = (float) getWidth() / nFrames;
-        float cellHeight = (float) getHeight() / nMfcc;
+        // Calculate margins for labels
+        int leftMargin = 50;  // space for coefficient labels
+        int bottomMargin = 40; // space for time labels
+        int topMargin = 40;    // space for title
 
-        // Draw MFCC heatmap
-        for (int i = 0; i < nMfcc; i++) {
-            for (int j = 0; j < nFrames; j++) {
-                float val = mfccData[i][j];
+        float cellWidth = (float) (getWidth() - leftMargin) / nFrames;
+        float cellHeight = (float) (getHeight() - topMargin - bottomMargin) / nMfcc;
+
+        // Draw MFCC heatmap: time on X, coeff on Y
+        // CORRECTED: now time is properly on X-axis, coefficients on Y-axis
+        for (int coeff = 0; coeff < nMfcc; coeff++) {
+            for (int frame = 0; frame < nFrames; frame++) {
+                float val = mfccData[coeff][frame];
                 float norm = (val - minVal) / (maxVal - minVal);
                 int color = Color.HSVToColor(new float[]{240f - norm * 240f, 1f, 1f});
                 paint.setColor(color);
 
-                float left = j * cellWidth;
-                float top = i * cellHeight;
+                // X = time/frame position, Y = coefficient position
+                float left = leftMargin + frame * cellWidth;
+                float top = topMargin + coeff * cellHeight;
                 canvas.drawRect(left, top, left + cellWidth, top + cellHeight, paint);
             }
         }
 
-        // Optional: draw frame count overlay every 10 frames
-        for (int j = 0; j < nFrames; j += 10) {
-            float timeSec = (j * hopLength) / (float) sampleRate;
-            canvas.drawText(String.format("%.1fs", timeSec), j * cellWidth, getHeight() - 10, textPaint);
+        // Draw time labels on X-axis every 10 frames
+        for (int frame = 0; frame < nFrames; frame += 10) {
+            float timeSec = (frame * hopLength) / (float) sampleRate;
+            canvas.drawText(String.format("%.1fs", timeSec),
+                    leftMargin + frame * cellWidth, getHeight() - 10, textPaint);
         }
 
-        // Optional: title
+        // Label Y-axis with MFCC coefficient index
+        for (int coeff = 0; coeff < nMfcc; coeff++) {
+            canvas.drawText("C" + coeff, 5, topMargin + coeff * cellHeight + 20, labelPaint);
+        }
+
+        // Title
         canvas.drawText("MFCC", 10, 30, textPaint);
+
+        // Frame counter (optional)
+        canvas.drawText("Frames: " + nFrames, getWidth() - 10, 30, framePaint);
     }
 }
