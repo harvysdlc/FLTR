@@ -27,6 +27,7 @@ import java.nio.channels.FileChannel;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ScreenMain extends AppCompatActivity {
@@ -101,15 +102,58 @@ public class ScreenMain extends AppCompatActivity {
                         transposed[j][i] = mfcc[i][j];
                     }
                 }
-                Log.d("ScreenMain","Transposed MFCC shape: [" + transposed.length + "][" + transposed[0].length + "]");
-                mfccView.setMfccData(transposed, 44100,  512 );
+
+                // Deep copy for visual display before normalization
+                float[][] displayMfcc = new float[mfccCount][timeSteps];
+                for (int i = 0; i < mfccCount; i++) {
+                    System.arraycopy(transposed[i], 0, displayMfcc[i], 0, timeSteps);
+                }
+                Log.d("ScreenMain","Transposed MFCC shape: [" + displayMfcc.length + "][" + displayMfcc[0].length + "]");
 
 
+
+                // Normalize MFCCs to zero mean and unit variance
+                float sum = 0f, sumSq = 0f;
+                int count = mfccCount * timeSteps;
+
+                // Compute mean
+                for (int i = 0; i < mfccCount; i++) {
+                    for (int j = 0; j < timeSteps; j++) {
+                        sum += transposed[i][j];
+                    }
+                }
+                float mean = sum / count;
+
+                // Compute std
+                for (int i = 0; i < mfccCount; i++) {
+                    for (int j = 0; j < timeSteps; j++) {
+                        float centered = transposed[i][j] - mean;
+                        sumSq += centered * centered;
+                    }
+                }
+                float std = (float) Math.sqrt(sumSq / count);
+                if (std < 1e-8f) std = 1e-8f;  // avoid division by zero
+
+                // Normalize
+                for (int i = 0; i < mfccCount; i++) {
+                    for (int j = 0; j < timeSteps; j++) {
+                        transposed[i][j] = (transposed[i][j] - mean) / std;
+                    }
+                }
 
 
                 // Create input batch shape [1][13][177]
                 float[][][] input = new float[1][mfccCount][timeSteps];
-                input[0] = transposed;
+                for (int i = 0; i < mfccCount; i++) {
+                    for (int j = 0; j < timeSteps; j++) {
+                        input[0][i][j] = transposed[i][j];
+                    }
+                }
+
+                Log.d("ScreenMain", "TFLite Input sample:");
+                for (int i = 0; i < Math.min(3, mfccCount); i++) {
+                    Log.d("ScreenMain", "Input MFCC " + i + ": " + Arrays.toString(Arrays.copyOf(input[0][i], 10)));
+                }
 
                 // Run inference
                 float[][] output = new float[1][getNumLabels()];
@@ -121,6 +165,7 @@ public class ScreenMain extends AppCompatActivity {
                 final float confidence = confidences[bestIdx];
 
                 runOnUiThread(() -> {
+                    mfccView.setMfccData(displayMfcc, 44100,  512 );
                     resultView.setText("Prediction: " + getLabel(bestIdx) + "\nConfidence: " + confidence);
                     recordButton.setText("Record");
                     isRecording = false;
