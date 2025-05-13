@@ -22,6 +22,7 @@ public class MFCCExtractor {
     private static final int TARGET_NUM_FRAMES = 177;  // For LSTM: [1,177,13]
 
     public static float[][] extractMFCCs(short[] pcmData) {
+
         Log.d("MFCCExtractor", "Input PCM length: " + pcmData.length);
 
         if (pcmData == null || pcmData.length < FFT_SIZE) {

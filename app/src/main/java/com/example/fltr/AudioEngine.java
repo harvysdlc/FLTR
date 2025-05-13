@@ -15,12 +15,10 @@ public class AudioEngine {
     private static final int SILENCE_THRESHOLD = 5000;
     private static final int TRIM_THRESHOLD = 3000;
     private static final int SILENCE_DURATION = 20;
-    private static final int MAX_AMPLITUDE = 16384;
 
     private boolean isRecording;
     private RecordingCallback callback;
-
-    private short[] lastTrimmedPcm;
+    private byte[] lastPcmBytes;
 
     public interface RecordingCallback {
         void onRecordingFinished(float[][] mfcc);
@@ -87,18 +85,15 @@ public class AudioEngine {
         short[] normalized = normalize(rawPcm);
         short[] trimmed = trimSilenceStart(normalized);
 
-        Log.d("AudioEngine", "Raw PCM length: " + rawPcm.length);
-        Log.d("AudioEngine", "Normalized length: " + normalized.length);
-        Log.d("AudioEngine", "Trimmed length: " + trimmed.length);
-
         if (trimmed.length < 1024) {
             callback.onError(new IllegalStateException("Trimmed audio too short."));
             return;
         }
 
-        lastTrimmedPcm = trimmed;
+        // Save for WAV export
+        lastPcmBytes = shortsToBytes(trimmed);
 
-        float[][] mfcc = MFCCExtractor.extractMFCCs(trimmed);
+        float[][] mfcc = CustomMFCC.extractMFCCs(trimmed);
         if (mfcc == null || mfcc.length == 0) {
             callback.onError(new IllegalStateException("MFCC extraction returned empty."));
         } else {
@@ -109,46 +104,53 @@ public class AudioEngine {
     private int getMaxAmplitude(short[] buffer) {
         int max = 0;
         for (short val : buffer) {
-            max = Math.max(max, Math.abs(val));
+            if (Math.abs(val) > max) max = Math.abs(val);
         }
         return max;
     }
 
-    private short[] normalize(short[] data) {
-        int max = getMaxAmplitude(data);
-        if (max == 0) return data;
-
-        float factor = (float) MAX_AMPLITUDE / max;
-        short[] normalized = new short[data.length];
-        for (int i = 0; i < data.length; i++) {
-            normalized[i] = (short) (data[i] * factor);
-        }
-        return normalized;
+    private short[] toShortArray(List<Short> list) {
+        short[] result = new short[list.size()];
+        for (int i = 0; i < list.size(); i++) result[i] = list.get(i);
+        return result;
     }
 
-    private short[] trimSilenceStart(short[] data) {
-        int start = 0;
-        while (start < data.length && Math.abs(data[start]) < TRIM_THRESHOLD) {
-            start++;
+    private short[] normalize(short[] input) {
+        int max = getMaxAmplitude(input);
+        if (max == 0) return input;
+
+        float normFactor = 32767.0f / max;
+        short[] out = new short[input.length];
+        for (int i = 0; i < input.length; i++) {
+            out[i] = (short) Math.max(Math.min(input[i] * normFactor, 32767), -32768);
         }
-        short[] trimmed = new short[data.length - start];
-        System.arraycopy(data, start, trimmed, 0, trimmed.length);
+        return out;
+    }
+
+    private short[] trimSilenceStart(short[] audio) {
+        int start = 0;
+        for (int i = 0; i < audio.length; i++) {
+            if (Math.abs(audio[i]) > TRIM_THRESHOLD) {
+                start = i;
+                break;
+            }
+        }
+        int trimmedLength = audio.length - start;
+        short[] trimmed = new short[trimmedLength];
+        System.arraycopy(audio, start, trimmed, 0, trimmedLength);
         return trimmed;
     }
 
-    private short[] toShortArray(List<Short> list) {
-        short[] array = new short[list.size()];
-        for (int i = 0; i < list.size(); i++) array[i] = list.get(i);
-        return array;
+    private byte[] shortsToBytes(short[] data) {
+        byte[] bytes = new byte[data.length * 2];
+        for (int i = 0; i < data.length; i++) {
+            bytes[i * 2] = (byte) (data[i] & 0xff);
+            bytes[i * 2 + 1] = (byte) ((data[i] >> 8) & 0xff);
+        }
+        return bytes;
     }
 
     public byte[] getLastTrimmedPcm() {
-        if (lastTrimmedPcm == null) return null;
-        byte[] bytes = new byte[lastTrimmedPcm.length * 2];
-        for (int i = 0; i < lastTrimmedPcm.length; i++) {
-            bytes[2 * i] = (byte) (lastTrimmedPcm[i] & 0xFF);
-            bytes[2 * i + 1] = (byte) ((lastTrimmedPcm[i] >> 8) & 0xFF);
-        }
-        return bytes;
+        return lastPcmBytes;
     }
 }
