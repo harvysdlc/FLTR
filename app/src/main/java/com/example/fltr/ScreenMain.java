@@ -3,6 +3,7 @@ package com.example.fltr;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.media.AudioFormat;
@@ -18,7 +19,10 @@ import androidx.core.app.ActivityCompat;
 import org.tensorflow.lite.Interpreter;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.MappedByteBuffer;
 import java.nio.ByteBuffer;
@@ -59,6 +63,11 @@ public class ScreenMain extends AppCompatActivity {
         mfccView = findViewById(R.id.mfccView);
         rtfView = findViewById(R.id.rtfView);
 
+
+
+        // Update the TextView
+        TextView baybayinResultView = findViewById(R.id.baybayinResultView);
+        baybayinResultView.setText(translateLabelsFromAssets());
 
 
         saveButton = findViewById(R.id.saveBtn);
@@ -173,21 +182,23 @@ public class ScreenMain extends AppCompatActivity {
                 // ⏱️ End timing
                 long endTime = System.currentTimeMillis();
                 float processingTimeSec = (endTime - startTime) / 1000f;
-
+                Log.d("ScreenMain", "Processing time: " + processingTimeSec + " seconds");
                 // 🎧 Estimate audio length from frame count
                 float audioDurationSec = timeSteps * 512f / 44100f;
+                Log.d("ScreenMain", "Audio duration: " + audioDurationSec + " seconds");
+
 
                 // ✅ Compute RTF
                 float rtf = processingTimeSec / audioDurationSec;
-
+                Log.d("ScreenMain,", "RTF: " + rtf);
                 runOnUiThread(() -> {
                     rtfView.setText(
-                            "Audio Duration: " + String.format("%.2f", audioDurationSec) +
-                                    "\nProcessing TIme: " + String.format("%.2f", processingTimeSec) +
-                                    "\nRTF: " + String.format("%.2f", rtf)
+                            "Audio Duration: " + String.format("%.6f", audioDurationSec) +
+                                    "\nProcessing Time: " + String.format("%.6f", processingTimeSec) +
+                                    "\nRTF: " + String.format("%.6f", rtf)
                     );
                     mfccView.setMfccData(displayMfcc, 44100,  512 );
-                    resultView.setText("Prediction: " + getLabel(bestIdx) + "\nConfidence: " + confidence);
+                    resultView.setText("Prediction: " + getLabel(bestIdx) + " " + BaybayinTranslator.translateToBaybayin(labels.get(bestIdx)) + "\nConfidence: " + confidence);
                     recordButton.setText("Record");
                     isRecording = false;
                     saveButton.setEnabled(true);
@@ -306,4 +317,24 @@ public class ScreenMain extends AppCompatActivity {
         }
         return maxIdx;
     }
+
+    private String translateLabelsFromAssets() {
+        StringBuilder output = new StringBuilder();
+        AssetManager assetManager = getAssets();
+        try (InputStream is = assetManager.open("labels.txt");
+             BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String translation = BaybayinTranslator.translateToBaybayin(line);
+                output.append("Original: ").append(line).append("\n");
+                output.append("Baybayin: ").append(translation).append("\n\n");
+            }
+        } catch (IOException e) {
+            output.append("Error reading labels.txt: ").append(e.getMessage());
+        }
+        return output.toString();
+    }
+
+
+
 }
