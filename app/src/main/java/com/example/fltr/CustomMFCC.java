@@ -9,17 +9,33 @@ public class CustomMFCC {
     private static final int NUM_MFCC = 13;
     private static final int NUM_MELS = 40;
     private static final int FFT_SIZE = 2048;
-    private static final int HOP_SIZE = 512;
+    static final int HOP_SIZE = 512;
     private static final int TARGET_NUM_FRAMES = 177;
     private static final double PRE_EMPHASIS = 0.97;
 
-    public static float[][] extractMFCCs(short[] pcm) {
+    // Container class to hold MFCC data and original frame count
+    public static class MfccResult {
+        public final float[][] mfccData;
+        public final int originalFrameCount;
+        public final int sampleCount;
+
+        public MfccResult(float[][] mfccData, int originalFrameCount, int sampleCount) {
+            this.mfccData = mfccData;
+            this.originalFrameCount = originalFrameCount;
+            this.sampleCount = sampleCount;
+        }
+    }
+
+    public static MfccResult extractMFCCs(short[] pcm) {
         float[] signal = normalizeAndPreEmphasize(pcm);
         float[][] frames = frameSignal(signal);
         double[][] powerSpectrogram = computePowerSpectrogram(frames);
         double[][] melSpectrogram = applyMelFilterBank(powerSpectrogram);
         float[][] mfcc = dct(melSpectrogram);
 
+        // Save original frame count before padding
+        int originalFrameCount = mfcc.length;
+        
         // Pad/truncate to TARGET_NUM_FRAMES
         float[][] finalMFCC = new float[TARGET_NUM_FRAMES][NUM_MFCC];
         int copyLen = Math.min(TARGET_NUM_FRAMES, mfcc.length);
@@ -28,7 +44,9 @@ public class CustomMFCC {
         }
 
         Log.d("CustomMFCC", "Extracted MFCC shape: [" + finalMFCC.length + "][" + NUM_MFCC + "]");
-        return finalMFCC;
+        Log.d("CustomMFCC", "Original frame count: " + originalFrameCount);
+        
+        return new MfccResult(finalMFCC, originalFrameCount, pcm.length);
     }
 
     private static float[] normalizeAndPreEmphasize(short[] pcm) {

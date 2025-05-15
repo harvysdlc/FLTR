@@ -102,7 +102,7 @@ public class ScreenMain extends AppCompatActivity {
         audioEngine.startRecording(new AudioEngine.RecordingCallback() {
             @Override
 
-            public void onRecordingFinished(float[][] mfcc) {
+            public void onRecordingFinished(float[][] mfcc, int originalFrameCount, int sampleCount) {
 
                 long startTime = System.currentTimeMillis();  // ⏱️ Start timing
 
@@ -183,10 +183,14 @@ public class ScreenMain extends AppCompatActivity {
                 long endTime = System.currentTimeMillis();
                 float processingTimeSec = (endTime - startTime) / 1000f;
                 Log.d("ScreenMain", "Processing time: " + processingTimeSec + " seconds");
-                // 🎧 Estimate audio length from frame count
-                float audioDurationSec = timeSteps * 512f / 44100f;
-                Log.d("ScreenMain", "Audio duration: " + audioDurationSec + " seconds");
-
+                
+                // Calculate actual audio duration from sample count
+                float audioDurationSec = (float) sampleCount / AudioEngine.SAMPLE_RATE;
+                Log.d("ScreenMain", "Raw audio duration: " + audioDurationSec + " seconds");
+                
+                // Alternative based on original frame count
+                float frameDurationSec = (float) originalFrameCount * CustomMFCC.HOP_SIZE / AudioEngine.SAMPLE_RATE;
+                Log.d("ScreenMain", "Frame-based duration: " + frameDurationSec + " seconds");
 
                 // ✅ Compute RTF
                 float rtf = processingTimeSec / audioDurationSec;
@@ -338,3 +342,4 @@ public class ScreenMain extends AppCompatActivity {
 
 
 }
+
