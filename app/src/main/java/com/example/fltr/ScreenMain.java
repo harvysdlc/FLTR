@@ -66,8 +66,7 @@ public class ScreenMain extends AppCompatActivity {
 
 
         // Update the TextView
-        TextView baybayinResultView = findViewById(R.id.baybayinResultView);
-        baybayinResultView.setText(translateLabelsFromAssets());
+
 
 
         saveButton = findViewById(R.id.saveBtn);
