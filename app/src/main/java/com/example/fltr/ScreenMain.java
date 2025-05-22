@@ -77,7 +77,7 @@ public class ScreenMain extends AppCompatActivity {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_RECORD_AUDIO);
 
         try {
-            tflite = new Interpreter(loadModelFile("partitioned_model_stratified.tflite"));
+            tflite = new Interpreter(loadModelFile("partitioned_model_stratified_final.tflite"));
             labels = loadLabels(this);
         } catch (IOException e) {
             e.printStackTrace();

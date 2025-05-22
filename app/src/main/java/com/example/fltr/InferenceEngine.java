@@ -15,7 +15,7 @@ public class InferenceEngine {
 
     public InferenceEngine(Context context) {
         try {
-            MappedByteBuffer model = FileUtil.loadMappedFile(context, "partitioned_model_stratified.tflite"); // ✅ load model from assets
+            MappedByteBuffer model = FileUtil.loadMappedFile(context, "partitioned_model_stratified_final.tflite"); // ✅ load model from assets
             tflite = new Interpreter(model);
             labels = FileUtil.loadLabels(context, "labels.txt"); // ✅ load labels from assets
         } catch (IOException e) {
