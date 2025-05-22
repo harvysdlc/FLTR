@@ -10,7 +10,7 @@ public class CustomMFCC {
     private static final int NUM_MELS = 40;
     private static final int FFT_SIZE = 2048;
     static final int HOP_SIZE = 512;
-    private static final int TARGET_NUM_FRAMES = 177;
+    private static final int TARGET_NUM_FRAMES = 221;
     private static final double PRE_EMPHASIS = 0.97;
 
     // Container class to hold MFCC data and original frame count

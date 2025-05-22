@@ -72,7 +72,7 @@ public class MfccVisualizerView extends View {
         if (mfccData == null || mfccData.length == 0) return;
 
         int nMfcc = mfccData.length;       // 13
-        int nFrames = mfccData[0].length;  // ~177
+        int nFrames = mfccData[0].length;  // ~221
 
         // Calculate margins for labels
         int leftMargin = 50;  // space for coefficient labels
