@@ -50,6 +50,8 @@ public class ScreenMain extends AppCompatActivity {
     private TextView resultView;
     private Interpreter tflite;
     private MfccVisualizerView mfccView;
+    private TextView baybayinView;
+
 
     private List<String> labels;
 
@@ -62,6 +64,8 @@ public class ScreenMain extends AppCompatActivity {
         resultView = findViewById(R.id.transcribeView);
         mfccView = findViewById(R.id.mfccView);
         rtfView = findViewById(R.id.rtfView);
+        baybayinView = findViewById(R.id.baybayinView);
+
 
 
 
@@ -175,6 +179,7 @@ public class ScreenMain extends AppCompatActivity {
 
                 // Get best prediction
                 final int bestIdx = argmax(confidences);
+                Log.d("ScreenMain", "Predicted class index: " + bestIdx);
                 final float confidence = confidences[bestIdx];
 
 
@@ -194,18 +199,23 @@ public class ScreenMain extends AppCompatActivity {
                 // ✅ Compute RTF
                 float rtf = processingTimeSec / audioDurationSec;
                 Log.d("ScreenMain,", "RTF: " + rtf);
+                String predictedLabel = getLabel(bestIdx);
+                String baybayinOutput = BaybayinTranslator.translateToBaybayin(predictedLabel);
+
                 runOnUiThread(() -> {
                     rtfView.setText(
                             "Audio Duration: " + String.format("%.6f", audioDurationSec) +
                                     "\nProcessing Time: " + String.format("%.6f", processingTimeSec) +
                                     "\nRTF: " + String.format("%.6f", rtf)
                     );
-                    mfccView.setMfccData(displayMfcc, 44100,  512 );
-                    resultView.setText("Prediction: " + getLabel(bestIdx) + " " + BaybayinTranslator.translateToBaybayin(labels.get(bestIdx)) + "\nConfidence: " + confidence);
+                    mfccView.setMfccData(displayMfcc, 44100, 512);
+                    resultView.setText("Prediction: " + predictedLabel + "\nConfidence: " + confidence);
+                    baybayinView.setText(baybayinOutput); // 👈 Set Baybayin text
                     recordButton.setText("Record");
                     isRecording = false;
                     saveButton.setEnabled(true);
                 });
+
             }
 
 

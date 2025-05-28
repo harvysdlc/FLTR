@@ -12,22 +12,24 @@
     <!-- 1) Prediction text -->
 
     <!-- 2) MFCC visualizer -->
+
     <TextView
         android:id="@+id/transcribeView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="68dp"
         android:layout_marginEnd="16dp"
+        android:background="#F8F8F8"
         android:fontFamily="@font/noto_sans_tagalog"
+        android:minHeight="60dp"
+        android:padding="8dp"
         android:text="Predicted label:"
+        android:textIsSelectable="true"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:padding="8dp"
-        android:textIsSelectable="true"
-        android:background="#F8F8F8"
-        android:minHeight="60dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -121,29 +123,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/mfccView" />
 
-    <ScrollView
-        android:id="@+id/baybayinScrollView"
-        android:layout_width="361dp"
-        android:layout_height="129dp"
-        android:layout_margin="16dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.555"
+    <TextView
+        android:id="@+id/baybayinView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="ᜊᜌᜊᜌᜒᜈ᜔ Output"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textColor="#000000"
+        android:padding="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:textIsSelectable="true"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/record"
-        app:layout_constraintVertical_bias="0.403">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/transcribeView"/>
 
-        <TextView
-            android:id="@+id/baybayinResultView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/noto_sans_tagalog"
-            android:padding="8dp"
-            android:scrollbars="vertical"
-            android:textColor="#000000"
-            android:textIsSelectable="true"
-            android:textSize="14sp" />
-    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -41,6 +41,7 @@ public class InferenceEngine {
             }
         }
 
+        android.util.Log.d("InferenceEngine", "Predicted class index: " + bestIndex);
         return getLabel(bestIndex);
     }
 
