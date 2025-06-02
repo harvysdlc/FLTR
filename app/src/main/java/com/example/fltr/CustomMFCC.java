@@ -15,16 +15,19 @@ public class CustomMFCC {
 
     // Container class to hold MFCC data and original frame count
     public static class MfccResult {
-        public final float[][] mfccData;
+        public final float[][] paddedMfcc;
+        public final float[][] originalMfcc;  // 👈 Add this
         public final int originalFrameCount;
         public final int sampleCount;
 
-        public MfccResult(float[][] mfccData, int originalFrameCount, int sampleCount) {
-            this.mfccData = mfccData;
+        public MfccResult(float[][] paddedMfcc, float[][] originalMfcc, int originalFrameCount, int sampleCount) {
+            this.paddedMfcc = paddedMfcc;
+            this.originalMfcc = originalMfcc;
             this.originalFrameCount = originalFrameCount;
             this.sampleCount = sampleCount;
         }
     }
+
 
     public static MfccResult extractMFCCs(short[] pcm) {
         float[] signal = normalizeAndPreEmphasize(pcm);
@@ -33,9 +36,14 @@ public class CustomMFCC {
         double[][] melSpectrogram = applyMelFilterBank(powerSpectrogram);
         float[][] mfcc = dct(melSpectrogram);
 
-        // Save original frame count before padding
         int originalFrameCount = mfcc.length;
-        
+
+        // Deep copy original MFCC (before padding)
+        float[][] originalMfcc = new float[originalFrameCount][NUM_MFCC];
+        for (int i = 0; i < originalFrameCount; i++) {
+            System.arraycopy(mfcc[i], 0, originalMfcc[i], 0, NUM_MFCC);
+        }
+
         // Pad/truncate to TARGET_NUM_FRAMES
         float[][] finalMFCC = new float[TARGET_NUM_FRAMES][NUM_MFCC];
         int copyLen = Math.min(TARGET_NUM_FRAMES, mfcc.length);
@@ -45,9 +53,10 @@ public class CustomMFCC {
 
         Log.d("CustomMFCC", "Extracted MFCC shape: [" + finalMFCC.length + "][" + NUM_MFCC + "]");
         Log.d("CustomMFCC", "Original frame count: " + originalFrameCount);
-        
-        return new MfccResult(finalMFCC, originalFrameCount, pcm.length);
+
+        return new MfccResult(finalMFCC, originalMfcc, originalFrameCount, pcm.length);
     }
+
 
     private static float[] normalizeAndPreEmphasize(short[] pcm) {
         float[] floatSignal = new float[pcm.length];
@@ -201,3 +210,4 @@ public class CustomMFCC {
         return 700 * (Math.pow(10, mel / 2595.0) - 1);
     }
 }
+

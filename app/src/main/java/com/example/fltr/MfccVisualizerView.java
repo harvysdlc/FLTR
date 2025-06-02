@@ -116,7 +116,6 @@ public class MfccVisualizerView extends View {
         // Title
         canvas.drawText("MFCC", 10, 30, textPaint);
 
-        // Frame counter (optional)
-        canvas.drawText("Frames: " + nFrames, getWidth() - 10, 30, framePaint);
+
     }
 }

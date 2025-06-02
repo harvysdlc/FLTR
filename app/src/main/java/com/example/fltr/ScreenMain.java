@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.graphics.Typeface;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.media.AudioFormat;
@@ -24,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.nio.MappedByteBuffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -45,6 +47,7 @@ public class ScreenMain extends AppCompatActivity {
     private short[] audioBuffer = new short[RECORDING_LENGTH];
     private Button recordButton;
     private Button saveButton;
+    private Button toggleViewButton;
     private TextView rtfView;
 
     private TextView resultView;
@@ -53,6 +56,11 @@ public class ScreenMain extends AppCompatActivity {
     private TextView baybayinView;
 
 
+    private boolean showingPadded = true;
+
+    private float[][] paddedMfcc;
+    private float[][] originalMfcc;
+
     private List<String> labels;
 
     @Override
@@ -60,17 +68,14 @@ public class ScreenMain extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_screen_main);
 
+        baybayinView = findViewById(R.id.baybayinView);
+
         recordButton = findViewById(R.id.record);
         resultView = findViewById(R.id.transcribeView);
         mfccView = findViewById(R.id.mfccView);
         rtfView = findViewById(R.id.rtfView);
-        baybayinView = findViewById(R.id.baybayinView);
 
-
-
-
-        // Update the TextView
-
+        toggleViewButton = findViewById(R.id.toggleView);
 
 
         saveButton = findViewById(R.id.saveBtn);
@@ -93,6 +98,7 @@ public class ScreenMain extends AppCompatActivity {
                 recordButton.setText("Stop");
             } else {
                 stopRecording();
+                toggleViewButton.setText("Show Original MFCC");
                 recordButton.setText("Record");
             }
         });
@@ -105,18 +111,18 @@ public class ScreenMain extends AppCompatActivity {
         audioEngine.startRecording(new AudioEngine.RecordingCallback() {
             @Override
 
-            public void onRecordingFinished(float[][] mfcc, int originalFrameCount, int sampleCount) {
+            public void onRecordingFinished(float[][] paddedMfcc, float[][] originalMfcc, int originalFrameCount, int sampleCount) {
 
                 long startTime = System.currentTimeMillis();  // ⏱️ Start timing
 
 
                 // Transpose MFCC from [177][13] to [13][177]
-                int timeSteps = mfcc.length;
-                int mfccCount = mfcc[0].length;
+                int timeSteps = paddedMfcc.length;
+                int mfccCount = paddedMfcc[0].length;
                 float[][] transposed = new float[mfccCount][timeSteps];
                 for (int i = 0; i < timeSteps; i++) {
                     for (int j = 0; j < mfccCount; j++) {
-                        transposed[j][i] = mfcc[i][j];
+                        transposed[j][i] = paddedMfcc[i][j];
                     }
                 }
 
@@ -183,15 +189,22 @@ public class ScreenMain extends AppCompatActivity {
                 final float confidence = confidences[bestIdx];
 
 
+
+                paddedMfcc = displayMfcc;  // Already normalized and transposed padded
+                originalMfcc = transposeAndNormalize(originalMfcc);  // You’ll need to normalize and transpose this too
+
+
+                Log.d("ScreenMain", "Original MFCC shape: [" + originalMfcc.length + "][" + originalMfcc[0].length + "]");
+                Log.d("ScreenMain", "Padded MFCC shape: [" + paddedMfcc.length + "][" + paddedMfcc[0].length + "]");
                 // ⏱️ End timing
                 long endTime = System.currentTimeMillis();
                 float processingTimeSec = (endTime - startTime) / 1000f;
                 Log.d("ScreenMain", "Processing time: " + processingTimeSec + " seconds");
-                
+
                 // Calculate actual audio duration from sample count
                 float audioDurationSec = (float) sampleCount / AudioEngine.SAMPLE_RATE;
                 Log.d("ScreenMain", "Raw audio duration: " + audioDurationSec + " seconds");
-                
+
                 // Alternative based on original frame count
                 float frameDurationSec = (float) originalFrameCount * CustomMFCC.HOP_SIZE / AudioEngine.SAMPLE_RATE;
                 Log.d("ScreenMain", "Frame-based duration: " + frameDurationSec + " seconds");
@@ -202,7 +215,24 @@ public class ScreenMain extends AppCompatActivity {
                 String predictedLabel = getLabel(bestIdx);
                 String baybayinOutput = BaybayinTranslator.translateToBaybayin(predictedLabel);
 
+                float[][] finalPaddedMfcc = paddedMfcc;
+                float[][] finalOriginalMfcc = originalMfcc;
                 runOnUiThread(() -> {
+
+
+                    toggleViewButton.setOnClickListener(v -> {
+                        toggleViewButton.setText("Show Original MFCC");
+                        showingPadded = !showingPadded;
+                        float[][] toDisplay = showingPadded ? finalPaddedMfcc : finalOriginalMfcc;
+                        mfccView.setMfccData(toDisplay, 44100, 512);
+                        // Dynamically update button text
+                        if (showingPadded) {
+                            toggleViewButton.setText("Show Original MFCC");
+                        } else {
+                            toggleViewButton.setText("Show Padded MFCC");
+                        }
+                    });
+
                     rtfView.setText(
                             "Audio Duration: " + String.format("%.6f", audioDurationSec) +
                                     "\nProcessing Time: " + String.format("%.6f", processingTimeSec) +
@@ -244,7 +274,9 @@ public class ScreenMain extends AppCompatActivity {
             return;
         }
 
-        String fileName = getExternalFilesDir(null).getAbsolutePath() + "/recording.wav";
+        String directory = getExternalFilesDir(null).getAbsolutePath();
+        String fileName = directory + "/recording_" + System.currentTimeMillis() + ".wav";
+
         try (FileOutputStream out = new FileOutputStream(fileName)) {
             writeWavHeader(out, pcmBytes.length, AudioEngine.SAMPLE_RATE, 1, 16);
             out.write(pcmBytes);
@@ -254,6 +286,7 @@ public class ScreenMain extends AppCompatActivity {
             runOnUiThread(() -> resultView.setText("Failed to save WAV: " + e.getMessage()));
         }
     }
+
 
     private void writeWavHeader(FileOutputStream out, int audioLen, int sampleRate, int channels, int bitsPerSample) throws IOException {
         int byteRate = sampleRate * channels * bitsPerSample / 8;
@@ -331,22 +364,42 @@ public class ScreenMain extends AppCompatActivity {
         return maxIdx;
     }
 
-    private String translateLabelsFromAssets() {
-        StringBuilder output = new StringBuilder();
-        AssetManager assetManager = getAssets();
-        try (InputStream is = assetManager.open("labels.txt");
-             BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String translation = BaybayinTranslator.translateToBaybayin(line);
-                output.append("Original: ").append(line).append("\n");
-                output.append("Baybayin: ").append(translation).append("\n\n");
+    private float[][] transposeAndNormalize(float[][] mfcc) {
+        int timeSteps = mfcc.length;
+        int mfccCount = mfcc[0].length;
+        float[][] transposed = new float[mfccCount][timeSteps];
+        for (int i = 0; i < timeSteps; i++) {
+            for (int j = 0; j < mfccCount; j++) {
+                transposed[j][i] = mfcc[i][j];
             }
-        } catch (IOException e) {
-            output.append("Error reading labels.txt: ").append(e.getMessage());
         }
-        return output.toString();
+
+        // Normalize
+        float sum = 0f, sumSq = 0f;
+        int count = mfccCount * timeSteps;
+        for (int i = 0; i < mfccCount; i++) {
+            for (int j = 0; j < timeSteps; j++) {
+                sum += transposed[i][j];
+            }
+        }
+        float mean = sum / count;
+        for (int i = 0; i < mfccCount; i++) {
+            for (int j = 0; j < timeSteps; j++) {
+                float centered = transposed[i][j] - mean;
+                sumSq += centered * centered;
+            }
+        }
+        float std = (float) Math.sqrt(sumSq / count);
+        if (std < 1e-8f) std = 1e-8f;
+        for (int i = 0; i < mfccCount; i++) {
+            for (int j = 0; j < timeSteps; j++) {
+                transposed[i][j] = (transposed[i][j] - mean) / std;
+            }
+        }
+        return transposed;
     }
+
+
 
 
 

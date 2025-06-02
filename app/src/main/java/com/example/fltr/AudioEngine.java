@@ -21,7 +21,7 @@ public class AudioEngine {
     private byte[] lastPcmBytes;
 
     public interface RecordingCallback {
-        void onRecordingFinished(float[][] mfcc, int originalFrameCount, int sampleCount);
+        void onRecordingFinished(float[][] paddedMfcc, float[][] originalMfcc, int originalFrameCount, int sampleCount);
         void onError(Exception e);
     }
 
@@ -94,10 +94,10 @@ public class AudioEngine {
         lastPcmBytes = shortsToBytes(trimmed);
 
         CustomMFCC.MfccResult mfccResult = CustomMFCC.extractMFCCs(trimmed);
-        if (mfccResult.mfccData == null || mfccResult.mfccData.length == 0) {
+        if (mfccResult.paddedMfcc == null || mfccResult.paddedMfcc.length == 0) {
             callback.onError(new IllegalStateException("MFCC extraction returned empty."));
         } else {
-            callback.onRecordingFinished(mfccResult.mfccData, mfccResult.originalFrameCount, mfccResult.sampleCount);
+            callback.onRecordingFinished(mfccResult.paddedMfcc, mfccResult.originalMfcc, mfccResult.originalFrameCount, mfccResult.sampleCount);
         }
     }
 
