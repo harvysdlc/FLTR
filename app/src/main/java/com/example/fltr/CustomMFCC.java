@@ -2,7 +2,16 @@ package com.example.fltr;
 
 import android.util.Log;
 
+import org.tensorflow.lite.Interpreter;
+
+import org.tensorflow.lite.support.common.FileUtil;
+
+import android.content.Context;
+
+import java.io.IOException;
+import java.nio.MappedByteBuffer;
 import java.util.Arrays;
+import java.util.List;
 
 public class CustomMFCC {
     private static final int SAMPLE_RATE = 44100;
@@ -16,7 +25,7 @@ public class CustomMFCC {
     // Container class to hold MFCC data and original frame count
     public static class MfccResult {
         public final float[][] paddedMfcc;
-        public final float[][] originalMfcc;  // 👈 Add this
+        public final float[][] originalMfcc;
         public final int originalFrameCount;
         public final int sampleCount;
 
@@ -28,6 +37,87 @@ public class CustomMFCC {
         }
     }
 
+    public static class InferenceHelper {
+        public final Interpreter tflite;
+        public final List<String> labels;
+
+        public InferenceHelper(Context context) throws IOException {
+            MappedByteBuffer model = FileUtil.loadMappedFile(context, "model.tflite");
+            tflite = new Interpreter(model);
+            labels = FileUtil.loadLabels(context, "labels.txt");
+        }
+
+        // New method to run inference
+        public InferenceResult runInference(float[][] paddedMfcc) {
+            long startTime = System.currentTimeMillis();
+
+            int timeSteps = paddedMfcc.length;
+            int mfccCount = paddedMfcc[0].length;
+
+            // Prepare input in original orientation [1][timeSteps][mfccCount]
+            float[][][] input = new float[1][timeSteps][mfccCount];
+            for (int i = 0; i < timeSteps; i++) {
+                for (int j = 0; j < mfccCount; j++) {
+                    input[0][i][j] = paddedMfcc[i][j];
+                }
+            }
+
+            Log.d("CustomMFCC", "Input shape: [" + input.length + "][" + input[0].length + "][" + input[0][0].length + "]");
+
+            // Log sample input for debugging
+            Log.d("CustomMFCC", "TFLite Input sample:");
+            for (int i = 0; i < Math.min(3, mfccCount); i++) {
+                Log.d("CustomMFCC", "Input MFCC " + i + ": " + Arrays.toString(Arrays.copyOf(input[0][i], Math.min(13, mfccCount))));
+            }
+
+            // Run inference
+            float[][] output = new float[1][labels.size()];
+            tflite.run(input, output);
+            float[] confidences = output[0];
+
+            // Get best prediction
+            int bestIdx = argmax(confidences);
+            float confidence = confidences[bestIdx];
+            String predictedLabel = labels.get(bestIdx);
+
+            Log.d("CustomMFCC", "Predicted class index: " + bestIdx);
+            Log.d("CustomMFCC", "Predicted label: " + predictedLabel);
+            Log.d("CustomMFCC", "Confidence: " + confidence);
+
+            // Calculate processing time
+            long endTime = System.currentTimeMillis();
+            float processingTimeSec = (endTime - startTime) / 1000f;
+
+            return new InferenceResult(bestIdx, predictedLabel, confidence, processingTimeSec);
+        }
+
+        private int argmax(float[] array) {
+            int maxIdx = 0;
+            float maxVal = array[0];
+            for (int i = 1; i < array.length; i++) {
+                if (array[i] > maxVal) {
+                    maxVal = array[i];
+                    maxIdx = i;
+                }
+            }
+            return maxIdx;
+        }
+    }
+
+    // Result class to hold inference results
+    public static class InferenceResult {
+        public final int bestIndex;
+        public final String label;
+        public final float confidence;
+        public final float processingTimeSec;
+
+        public InferenceResult(int bestIndex, String label, float confidence, float processingTimeSec) {
+            this.bestIndex = bestIndex;
+            this.label = label;
+            this.confidence = confidence;
+            this.processingTimeSec = processingTimeSec;
+        }
+    }
 
     public static MfccResult extractMFCCs(short[] pcm) {
         float[] signal = normalizeAndPreEmphasize(pcm);
@@ -56,7 +146,6 @@ public class CustomMFCC {
 
         return new MfccResult(finalMFCC, originalMfcc, originalFrameCount, pcm.length);
     }
-
 
     private static float[] normalizeAndPreEmphasize(short[] pcm) {
         float[] floatSignal = new float[pcm.length];

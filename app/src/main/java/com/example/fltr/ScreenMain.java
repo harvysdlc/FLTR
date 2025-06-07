@@ -9,6 +9,7 @@ import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.media.AudioFormat;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -32,6 +33,7 @@ import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -51,17 +53,17 @@ public class ScreenMain extends AppCompatActivity {
     private TextView rtfView;
 
     private TextView resultView;
-    private Interpreter tflite;
     private MfccVisualizerView mfccView;
     private TextView baybayinView;
-
 
     private boolean showingPadded = true;
 
     private float[][] paddedMfcc;
     private float[][] originalMfcc;
 
-    private List<String> labels;
+    private CustomMFCC.InferenceHelper inferenceHelper;  // Using CustomMFCC's InferenceHelper
+
+    private AudioEngine audioEngine = new AudioEngine();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,17 +79,14 @@ public class ScreenMain extends AppCompatActivity {
 
         toggleViewButton = findViewById(R.id.toggleView);
 
-
         saveButton = findViewById(R.id.saveBtn);
         saveButton.setOnClickListener(view -> saveLastRecordingAsWav());
         saveButton.setEnabled(false); // Disable initially
 
-
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_RECORD_AUDIO);
 
         try {
-            tflite = new Interpreter(loadModelFile("partitioned_model_stratified_final.tflite"));
-            labels = loadLabels(this);
+            inferenceHelper = new CustomMFCC.InferenceHelper(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -104,126 +103,51 @@ public class ScreenMain extends AppCompatActivity {
         });
     }
 
-    private AudioEngine audioEngine = new AudioEngine();
-
     private void startRecording() {
         isRecording = true;
         audioEngine.startRecording(new AudioEngine.RecordingCallback() {
             @Override
+            public void onRecordingFinished(short[] audioData) {
+                long startTime = System.currentTimeMillis();  // Start timing
 
-            public void onRecordingFinished(float[][] paddedMfcc, float[][] originalMfcc, int originalFrameCount, int sampleCount) {
+                // Process the audio data using CustomMFCC
+                CustomMFCC.MfccResult mfccResult = CustomMFCC.extractMFCCs(audioData);
 
-                long startTime = System.currentTimeMillis();  // ⏱️ Start timing
-
-
-                // Transpose MFCC from [177][13] to [13][177]
-                int timeSteps = paddedMfcc.length;
-                int mfccCount = paddedMfcc[0].length;
-                float[][] transposed = new float[mfccCount][timeSteps];
-                for (int i = 0; i < timeSteps; i++) {
-                    for (int j = 0; j < mfccCount; j++) {
-                        transposed[j][i] = paddedMfcc[i][j];
-                    }
-                }
-
-                // Deep copy for visual display before normalization
-                float[][] displayMfcc = new float[mfccCount][timeSteps];
-                for (int i = 0; i < mfccCount; i++) {
-                    System.arraycopy(transposed[i], 0, displayMfcc[i], 0, timeSteps);
-                }
-                Log.d("ScreenMain","Transposed MFCC shape: [" + displayMfcc.length + "][" + displayMfcc[0].length + "]");
+                saveMFCCtoFile(mfccResult.paddedMfcc, "mfcc_input_before_inference.txt");
+                // Store the MFCC data for visualization
+                paddedMfcc = mfccResult.paddedMfcc;
 
 
 
-                // Normalize MFCCs to zero mean and unit variance
-                float sum = 0f, sumSq = 0f;
-                int count = mfccCount * timeSteps;
 
-                // Compute mean
-                for (int i = 0; i < mfccCount; i++) {
-                    for (int j = 0; j < timeSteps; j++) {
-                        sum += transposed[i][j];
-                    }
-                }
-                float mean = sum / count;
+                // Use CustomMFCC's InferenceHelper to run inference
+                CustomMFCC.InferenceResult result = inferenceHelper.runInference(mfccResult.paddedMfcc);
 
-                // Compute std
-                for (int i = 0; i < mfccCount; i++) {
-                    for (int j = 0; j < timeSteps; j++) {
-                        float centered = transposed[i][j] - mean;
-                        sumSq += centered * centered;
-                    }
-                }
-                float std = (float) Math.sqrt(sumSq / count);
-                if (std < 1e-8f) std = 1e-8f;  // avoid division by zero
-
-                // Normalize
-                for (int i = 0; i < mfccCount; i++) {
-                    for (int j = 0; j < timeSteps; j++) {
-                        transposed[i][j] = (transposed[i][j] - mean) / std;
-                    }
-                }
-
-
-                // Create input batch shape [1][13][177]
-                float[][][] input = new float[1][mfccCount][timeSteps];
-                for (int i = 0; i < mfccCount; i++) {
-                    for (int j = 0; j < timeSteps; j++) {
-                        input[0][i][j] = transposed[i][j];
-                    }
-                }
-
-                Log.d("ScreenMain", "TFLite Input sample:");
-                for (int i = 0; i < Math.min(3, mfccCount); i++) {
-                    Log.d("ScreenMain", "Input MFCC " + i + ": " + Arrays.toString(Arrays.copyOf(input[0][i], 10)));
-                }
-
-                // Run inference
-                float[][] output = new float[1][getNumLabels()];
-                tflite.run(input, output);
-                float[] confidences = output[0];
-
-                // Get best prediction
-                final int bestIdx = argmax(confidences);
-                Log.d("ScreenMain", "Predicted class index: " + bestIdx);
-                final float confidence = confidences[bestIdx];
-
-
-
-                paddedMfcc = displayMfcc;  // Already normalized and transposed padded
-                originalMfcc = transposeAndNormalize(originalMfcc);  // You’ll need to normalize and transpose this too
-
-
-                Log.d("ScreenMain", "Original MFCC shape: [" + originalMfcc.length + "][" + originalMfcc[0].length + "]");
-                Log.d("ScreenMain", "Padded MFCC shape: [" + paddedMfcc.length + "][" + paddedMfcc[0].length + "]");
-                // ⏱️ End timing
-                long endTime = System.currentTimeMillis();
-                float processingTimeSec = (endTime - startTime) / 1000f;
-                Log.d("ScreenMain", "Processing time: " + processingTimeSec + " seconds");
+                // Process and display the result
+                String predictedLabel = result.label;
+                float confidence = result.confidence;
+                String baybayinOutput = BaybayinTranslator.translateToBaybayin(predictedLabel);
 
                 // Calculate actual audio duration from sample count
-                float audioDurationSec = (float) sampleCount / AudioEngine.SAMPLE_RATE;
+                float audioDurationSec = (float) audioData.length / AudioEngine.SAMPLE_RATE;
                 Log.d("ScreenMain", "Raw audio duration: " + audioDurationSec + " seconds");
 
                 // Alternative based on original frame count
-                float frameDurationSec = (float) originalFrameCount * CustomMFCC.HOP_SIZE / AudioEngine.SAMPLE_RATE;
+                float frameDurationSec = (float) mfccResult.originalFrameCount * CustomMFCC.HOP_SIZE / AudioEngine.SAMPLE_RATE;
                 Log.d("ScreenMain", "Frame-based duration: " + frameDurationSec + " seconds");
 
-                // ✅ Compute RTF
-                float rtf = processingTimeSec / audioDurationSec;
-                Log.d("ScreenMain,", "RTF: " + rtf);
-                String predictedLabel = getLabel(bestIdx);
-                String baybayinOutput = BaybayinTranslator.translateToBaybayin(predictedLabel);
+                // Compute RTF
+                float rtf = result.processingTimeSec / audioDurationSec;
+                Log.d("ScreenMain", "RTF: " + rtf);
 
-                float[][] finalPaddedMfcc = paddedMfcc;
-                float[][] finalOriginalMfcc = originalMfcc;
+                final float finalRtf = rtf;
+                final float finalAudioDurationSec = audioDurationSec;
+                final float finalProcessingTimeSec = result.processingTimeSec;
+
                 runOnUiThread(() -> {
-
-
                     toggleViewButton.setOnClickListener(v -> {
-                        toggleViewButton.setText("Show Original MFCC");
                         showingPadded = !showingPadded;
-                        float[][] toDisplay = showingPadded ? finalPaddedMfcc : finalOriginalMfcc;
+                        float[][] toDisplay = showingPadded ? paddedMfcc : originalMfcc;
                         mfccView.setMfccData(toDisplay, 44100, 512);
                         // Dynamically update button text
                         if (showingPadded) {
@@ -234,21 +158,20 @@ public class ScreenMain extends AppCompatActivity {
                     });
 
                     rtfView.setText(
-                            "Audio Duration: " + String.format("%.6f", audioDurationSec) +
-                                    "\nProcessing Time: " + String.format("%.6f", processingTimeSec) +
-                                    "\nRTF: " + String.format("%.6f", rtf)
+                            "Audio Duration: " + String.format("%.6f", finalAudioDurationSec) +
+                                    "\nProcessing Time: " + String.format("%.6f", finalProcessingTimeSec) +
+                                    "\nRTF: " + String.format("%.6f", finalRtf)
                     );
-                    mfccView.setMfccData(displayMfcc, 44100, 512);
+                    mfccView.setMfccData(paddedMfcc, 44100, 512);
                     resultView.setText("Prediction: " + predictedLabel + "\nConfidence: " + confidence);
-                    baybayinView.setText(baybayinOutput); // 👈 Set Baybayin text
+                    baybayinView.setText(baybayinOutput);
                     recordButton.setText("Record");
                     isRecording = false;
                     saveButton.setEnabled(true);
+
+
                 });
-
             }
-
-
 
             @Override
             public void onError(Exception e) {
@@ -261,11 +184,9 @@ public class ScreenMain extends AppCompatActivity {
         });
     }
 
-
     private void stopRecording() {
         isRecording = false; // Triggers AudioEngine to exit loop
     }
-
 
     private void saveLastRecordingAsWav() {
         byte[] pcmBytes = audioEngine.getLastTrimmedPcm();
@@ -286,7 +207,6 @@ public class ScreenMain extends AppCompatActivity {
             runOnUiThread(() -> resultView.setText("Failed to save WAV: " + e.getMessage()));
         }
     }
-
 
     private void writeWavHeader(FileOutputStream out, int audioLen, int sampleRate, int channels, int bitsPerSample) throws IOException {
         int byteRate = sampleRate * channels * bitsPerSample / 8;
@@ -315,93 +235,29 @@ public class ScreenMain extends AppCompatActivity {
         return ByteBuffer.allocate(2).order(ByteOrder.LITTLE_ENDIAN).putShort(val).array();
     }
 
+    private void saveMFCCtoFile(float[][] mfcc, String filename) {
+        StringBuilder sb = new StringBuilder();
 
-    private MappedByteBuffer loadModelFile(String modelName) throws IOException {
-        FileInputStream inputStream = new FileInputStream(getAssets().openFd(modelName).getFileDescriptor());
-        FileChannel fileChannel = inputStream.getChannel();
-        long startOffset = getAssets().openFd(modelName).getStartOffset();
-        long declaredLength = getAssets().openFd(modelName).getDeclaredLength();
-        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);
-    }
-
-    private List<String> loadLabels(Context context) {
-        List<String> labels = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(context.getAssets().open("labels.txt")))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                labels.add(line.trim());
+        for (int i = 0; i < mfcc.length; i++) {
+            for (int j = 0; j < mfcc[i].length; j++) {
+                sb.append(mfcc[i][j]);
+                if (j < mfcc[i].length - 1) sb.append(" ");
             }
+            sb.append("\n");
+        }
+
+        // Save to Downloads folder
+        String mfccFile = "mfcc_from_app.txt";
+        File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File file = new File(downloadsDir, mfccFile);
+
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            fos.write(sb.toString().getBytes(StandardCharsets.UTF_8));
+            Log.d("ScreenMain", "MFCC saved to file: " + file.getAbsolutePath());
         } catch (IOException e) {
-            Log.e("LabelLoader", "Error loading labels", e);
+            Log.e("ScreenMain", "Error saving MFCC to file", e);
         }
-        return labels;
     }
-
-
-
-
-
-    private String getLabel(int index) {
-        if (labels != null && index >= 0 && index < labels.size()) {
-            return labels.get(index);
-        }
-        return "Unknown";
-    }
-
-    private int getNumLabels() {
-        return labels != null ? labels.size() : 0;
-    }
-    private int argmax(float[] array) {
-        int maxIdx = 0;
-        float maxVal = array[0];
-        for (int i = 1; i < array.length; i++) {
-            if (array[i] > maxVal) {
-                maxVal = array[i];
-                maxIdx = i;
-            }
-        }
-        return maxIdx;
-    }
-
-    private float[][] transposeAndNormalize(float[][] mfcc) {
-        int timeSteps = mfcc.length;
-        int mfccCount = mfcc[0].length;
-        float[][] transposed = new float[mfccCount][timeSteps];
-        for (int i = 0; i < timeSteps; i++) {
-            for (int j = 0; j < mfccCount; j++) {
-                transposed[j][i] = mfcc[i][j];
-            }
-        }
-
-        // Normalize
-        float sum = 0f, sumSq = 0f;
-        int count = mfccCount * timeSteps;
-        for (int i = 0; i < mfccCount; i++) {
-            for (int j = 0; j < timeSteps; j++) {
-                sum += transposed[i][j];
-            }
-        }
-        float mean = sum / count;
-        for (int i = 0; i < mfccCount; i++) {
-            for (int j = 0; j < timeSteps; j++) {
-                float centered = transposed[i][j] - mean;
-                sumSq += centered * centered;
-            }
-        }
-        float std = (float) Math.sqrt(sumSq / count);
-        if (std < 1e-8f) std = 1e-8f;
-        for (int i = 0; i < mfccCount; i++) {
-            for (int j = 0; j < timeSteps; j++) {
-                transposed[i][j] = (transposed[i][j] - mean) / std;
-            }
-        }
-        return transposed;
-    }
-
-
-
-
-
 }
+
 
