@@ -28,7 +28,8 @@ public class Registration extends AppCompatActivity {
         Button proceedButton = findViewById(R.id.proceedButton);
 
         // Spinner setup
-        String[] genderOptions = {"Male", "Female", "Rather not say", "LGBTQIA+"};
+        // new
+        String[] genderOptions = {"Male", "Female", "Rather not say", "LGBTQIA+++"};
         ArrayAdapter<String> genderAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, genderOptions);
         genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         genderSpinner.setAdapter(genderAdapter);
