@@ -15,7 +15,7 @@ import java.util.List;
 
 public class CustomMFCC {
     private static final int SAMPLE_RATE = 44100;
-    private static final int NUM_MFCC = 13;
+    private static final int NUM_MFCC = 20;
     private static final int NUM_MELS = 40;
     private static final int FFT_SIZE = 2048;
     static final int HOP_SIZE = 512;
@@ -67,7 +67,7 @@ public class CustomMFCC {
             // Log sample input for debugging
             Log.d("CustomMFCC", "TFLite Input sample:");
             for (int i = 0; i < Math.min(3, mfccCount); i++) {
-                Log.d("CustomMFCC", "Input MFCC " + i + ": " + Arrays.toString(Arrays.copyOf(input[0][i], Math.min(13, mfccCount))));
+                Log.d("CustomMFCC", "Input MFCC " + i + ": " + Arrays.toString(Arrays.copyOf(input[0][i], Math.min(20, mfccCount))));
             }
 
             // Run inference
