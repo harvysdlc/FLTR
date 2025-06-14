@@ -38,6 +38,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+
 public class ScreenMain extends AppCompatActivity {
 
     private static final int SAMPLE_RATE = 44100;
@@ -94,11 +99,11 @@ public class ScreenMain extends AppCompatActivity {
         recordButton.setOnClickListener(view -> {
             if (!isRecording) {
                 startRecording();
-                recordButton.setText("Stop");
+                recordButton.setText("Listening...");
             } else {
                 stopRecording();
                 toggleViewButton.setText("Show Original MFCC");
-                recordButton.setText("Record");
+                recordButton.setText("Tap to Speak");
             }
         });
     }
@@ -116,8 +121,6 @@ public class ScreenMain extends AppCompatActivity {
                 saveMFCCtoFile(mfccResult.paddedMfcc, "mfcc_input_before_inference.txt");
                 // Store the MFCC data for visualization
                 paddedMfcc = mfccResult.paddedMfcc;
-
-
 
 
                 // Use CustomMFCC's InferenceHelper to run inference
@@ -165,7 +168,7 @@ public class ScreenMain extends AppCompatActivity {
                     mfccView.setMfccData(paddedMfcc, 44100, 512);
                     resultView.setText("Prediction: " + predictedLabel + "\nConfidence: " + confidence);
                     baybayinView.setText(baybayinOutput);
-                    recordButton.setText("Record");
+                    recordButton.setText("Tap to Speak");
                     isRecording = false;
                     saveButton.setEnabled(true);
 
@@ -177,7 +180,7 @@ public class ScreenMain extends AppCompatActivity {
             public void onError(Exception e) {
                 runOnUiThread(() -> {
                     resultView.setText("Error: " + e.getMessage());
-                    recordButton.setText("Record");
+                    recordButton.setText("Tap to Speak");
                     isRecording = false;
                 });
             }
