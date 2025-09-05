@@ -1,33 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    tools:context="com.example.fltr.ScreenMain">
+    tools:context="com.example.fltr.ScreenMain"
+    tools:layout_editor_absoluteX="3dp"
+    tools:layout_editor_absoluteY="-17dp">
 
     <!-- 1) Prediction text -->
 
     <!-- 2) MFCC visualizer -->
 
+    <!-- 3) Frame count overlay -->
+
+    <!-- 4) Record button -->
+
+    <!-- Center guideline for bottom buttons -->
+
     <TextView
         android:id="@+id/transcribeView"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="68dp"
-        android:layout_marginEnd="16dp"
-        android:background="#F8F8F8"
-        android:fontFamily="@font/noto_sans_tagalog"
-        android:minHeight="60dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="10dp"
+        android:background="#ffffff"
+        android:fontFamily="@font/newake"
+        android:minHeight="32dp"
         android:padding="8dp"
         android:text="Predicted label:"
+        android:textColor="@color/black"
         android:textIsSelectable="true"
-        android:textSize="18sp"
-        android:textStyle="bold"
+        android:textSize="15sp"
+        android:textStyle="normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,127 +45,147 @@
         android:id="@+id/mfccView"
         android:layout_width="0dp"
         android:layout_height="200dp"
-        android:background="#222"
-        app:layout_constraintTop_toBottomOf="@id/transcribeView"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="12dp"
+        android:background="#000000"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="8dp"/>
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/transcribeView" />
 
-    <!-- 3) Frame count overlay -->
+    <TextView
+        android:id="@+id/rtfView"
+        android:layout_width="0dp"
+        android:layout_height="90dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="12dp"
+        android:background="#000000"
+        android:fontFamily="@font/newake"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="RTF: --"
+        android:textColor="#FFFFFF"
+        android:textSize="13sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mfccView" />
+
     <TextView
         android:id="@+id/frameCountView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Frames: 0"
-        android:textColor="#FFFFFF"
+        android:layout_margin="8dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="16dp"
         android:background="#88000000"
         android:padding="4dp"
-        app:layout_constraintTop_toTopOf="@id/mfccView"
+        android:text="Frames: 0"
+        android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@id/mfccView"
-        android:layout_margin="8dp"/>
-
-    <!-- 4) Record button -->
-    <Button
-        android:id="@+id/record"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/tap_to_speak"
-        android:textAllCaps="false"
-        app:layout_constraintTop_toBottomOf="@id/mfccView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"/>
-
-    <!-- Center guideline for bottom buttons -->
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guidelineCenter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintGuide_percent="0.5"
-        android:orientation="vertical"/>
+        app:layout_constraintTop_toTopOf="@id/mfccView" />
 
     <!-- 5) Toggle Full/Trimmed MFCC -->
 
     <!-- 6) Save Recording -->
-
-    <Button
-        android:id="@+id/toggleView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
-        android:text="Show Full MFCC"
-        android:textAllCaps="false"
-        app:layout_constraintEnd_toStartOf="@id/guidelineCenter"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/record" />
 
 
     <!-- 7) RTF Display -->
 
 
     <Button
-        android:id="@+id/saveBtn"
+        android:id="@+id/record"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="112dp"
+        android:layout_marginRight="12dp"
+        android:background="@drawable/rounded_bg"
+        android:fontFamily="@font/newake"
+        android:gravity="center"
+        android:text="@string/tap_to_speak"
+        android:textAllCaps="false"
+        android:textColor="@color/gitna"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.625"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mfccView" />
+
+    <Button
+        android:id="@+id/saveBtn"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="12dp"
+        android:background="@drawable/rounded_bg"
+        android:fontFamily="@font/newake"
+        android:gravity="center"
         android:text="Save Recording"
         android:textAllCaps="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@id/guidelineCenter"
-        app:layout_constraintTop_toBottomOf="@id/record" />
-
-    <TextView
-        android:id="@+id/rtfView"
-        android:layout_width="384dp"
-        android:layout_height="97dp"
-        android:layout_marginTop="136dp"
-        android:background="#333333"
-        android:gravity="center"
-        android:padding="8dp"
-        android:text="RTF: --"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
+        android:textColor="@color/gitna"
+        android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/mfccView" />
+        app:layout_constraintTop_toBottomOf="@id/record" />
 
     <TextView
         android:id="@+id/baybayinView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="ᜊᜌᜊᜌᜒᜈ᜔ Output"
-        android:fontFamily="@font/noto_sans_tagalog"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:textColor="#000000"
-        android:padding="8dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:background="@drawable/rounded_bg"
         android:clickable="true"
         android:focusable="true"
+        android:fontFamily="@font/noto_sans_tagalog"
+        android:gravity="center"
+        android:padding="20dp"
+        android:text="ᜊᜌᜊᜌᜒᜈ᜔ Output"
+        android:textColor="@color/gitna"
         android:textIsSelectable="true"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/transcribeView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/transcribeView"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.757" />
 
     <Button
-        android:id="@+id/learn"
-        android:layout_width="wrap_content"
+        android:id="@+id/learn_chart"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
-        android:text="@string/learn"
+        android:layout_marginRight="12dp"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/rounded_bg"
+        android:fontFamily="@font/newake"
+        android:text="@string/learn_baybayin"
+        android:textAllCaps="false"
+        android:textColor="@color/gitna"
+        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.055"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintHorizontal_bias="0.956"
+        app:layout_constraintStart_toStartOf="parent" />
 
+    <Button
+        android:id="@+id/toggleView"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/rounded_bg"
+        android:fontFamily="@font/newake"
+        android:text="Show Full MFCC"
+        android:textAllCaps="false"
+        android:textColor="@color/gitna"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
