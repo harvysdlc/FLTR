@@ -18,7 +18,7 @@
             android:layout_marginRight="12dp"
             android:layout_marginLeft="12dp"
             android:layout_marginTop="12dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
@@ -31,12 +31,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0in"
                     android:textSize="20sp"
                     android:textStyle="normal"
                     android:layout_gravity="center"
                     android:textColor="@color/white"
-                    android:text="Vowel : Patinig (ᜉᜆᜒᜈᜒᜄ)᜔"
+                    android:text="@string/vowel_patinig"
                     android:fontFamily="@font/newake"
                     />
             </androidx.cardview.widget.CardView>
@@ -54,17 +53,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/a"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.15in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="A/a"
+                    android:text="@string/a_a"
                     android:fontFamily="@font/newake"
                     />
             </androidx.cardview.widget.CardView>
@@ -82,17 +84,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/e"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.4in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="E/e  or  I/i"
+                    android:text="@string/e_e_or_i_i"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
 
@@ -108,17 +113,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/o"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.45in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="O/o or U/u"
+                    android:text="@string/o_o_or_u_u"
                     android:fontFamily="@font/newake"/>
             </androidx.cardview.widget.CardView>
 
@@ -132,12 +140,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0in"
                     android:textSize="20sp"
                     android:textStyle="normal"
                     android:layout_gravity="center"
                     android:textColor="@color/white"
-                    android:text="Vowel + Consonant Combination"
+                    android:text="@string/vowel_consonant_combination"
                     android:fontFamily="@font/newake"
                     />
             </androidx.cardview.widget.CardView>
@@ -155,17 +162,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/ba"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.3in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="Ba/ba"
+                    android:text="@string/ba_ba"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
 
@@ -181,17 +191,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/be"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.6in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="Be/be or Bi/bi"
+                    android:text="@string/be_be_or_bi_bi"
                     android:fontFamily="@font/newake"/>
             </androidx.cardview.widget.CardView>
 
@@ -208,17 +221,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/bo"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.7in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="Bo/bo or Bu/bu"
+                    android:text="@string/bo_bo_or_bu_bu"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
 
@@ -234,17 +250,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/ka"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.3in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="Ka/ka"
+                    android:text="@string/ka_ka"
                     android:fontFamily="@font/newake"/>
             </androidx.cardview.widget.CardView>
 
@@ -261,17 +280,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/ke"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.65in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="Ke/ke or Ki/ki"
+                    android:text="@string/ke_ke_or_ki_ki"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
 
@@ -287,17 +309,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/ko"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.7in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="Ko/ko or Ku/ku"
+                    android:text="@string/ko_ko_or_ku_ku"
                     android:fontFamily="@font/newake"/>
             </androidx.cardview.widget.CardView>
 
@@ -314,17 +339,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/da"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.35in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="Da/da"
+                    android:text="@string/da_da"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
 
@@ -340,17 +368,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/de"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.7in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="De/de or Di/di"
+                    android:text="@string/de_de_or_di_di"
                     android:fontFamily="@font/newake"/>
             </androidx.cardview.widget.CardView>
 
@@ -367,17 +398,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/doo"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.78in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="Do/do or Du/du"
+                    android:text="@string/do_do_or_du_du"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
 
@@ -393,17 +427,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/ga"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.37in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="Ga/ga"
+                    android:text="@string/ga_ga"
                     android:fontFamily="@font/newake"/>
             </androidx.cardview.widget.CardView>
 
@@ -420,17 +457,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/ge"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.725in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="Ge/ge or Gi/gi"
+                    android:text="@string/ge_ge_or_gi_gi"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
 
@@ -446,17 +486,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/go"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.785in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="Go/go or Gu/gu"
+                    android:text="@string/go_go_or_gu_gu"
                     android:fontFamily="@font/newake"/>
             </androidx.cardview.widget.CardView>
 
@@ -473,17 +516,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/ha"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.35in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="Ha/ha"
+                    android:text="@string/ha_ha"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
 
@@ -499,17 +545,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/he"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.67in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="He/he or Hi/hi"
+                    android:text="@string/he_he_or_hi_hi"
                     android:fontFamily="@font/newake"/>
             </androidx.cardview.widget.CardView>
 
@@ -526,17 +575,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/ho"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.72in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="Ho/ho or Hu/hu"
+                    android:text="@string/ho_ho_or_hu_hu"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
 
@@ -552,17 +604,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/la"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.3in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="La/la"
+                    android:text="@string/la_la"
                     android:fontFamily="@font/newake"/>
             </androidx.cardview.widget.CardView>
 
@@ -579,17 +634,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/le"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.58in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="Le/le or Li/li"
+                    android:text="@string/le_le_or_li_li"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
 
@@ -605,17 +663,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/lo"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.64in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="Lo/lo or Lu/lu"
+                    android:text="@string/lo_lo_or_lu_lu"
                     android:fontFamily="@font/newake"/>
             </androidx.cardview.widget.CardView>
 
@@ -632,17 +693,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/ma"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.4in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="Ma/ma"
+                    android:text="@string/ma_ma"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
 
@@ -658,17 +722,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/me"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.755in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="Me/me or Mi/mi"
+                    android:text="@string/me_me_or_mi_mi"
                     android:fontFamily="@font/newake"/>
             </androidx.cardview.widget.CardView>
 
@@ -685,17 +752,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/mo"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.85in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="Mo/mo or Mu/mu"
+                    android:text="@string/mo_mo_or_mu_mu"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
 
@@ -705,23 +775,27 @@
                 android:layout_margin="5dp"
                 app:cardElevation="5dp"
                 app:cardCornerRadius="5dp"
-                app:cardBackgroundColor="@color/white">
+                app:cardBackgroundColor="@color/white"
+                tools:ignore="TooManyViews">
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/na"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.375in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="Na/na"
+                    android:text="@string/na_na"
                     android:fontFamily="@font/newake"/>
             </androidx.cardview.widget.CardView>
 
@@ -738,17 +812,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/ne"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.71in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="Ne/ne or Ni/ni"
+                    android:text="@string/ne_ne_or_ni_ni"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
 
@@ -764,17 +841,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/no"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.755in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="No/no or Nu/nu"
+                    android:text="@string/no_no_or_nu_nu"
                     android:fontFamily="@font/newake"/>
             </androidx.cardview.widget.CardView>
 
@@ -791,17 +871,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/pa"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.4in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="Pa/pa"
+                    android:text="@string/pa_pa"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
 
@@ -817,17 +900,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/pe"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.73in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="Pe/pe or Pi/pi"
+                    android:text="@string/pe_pe_or_pi_pi"
                     android:fontFamily="@font/newake"/>
             </androidx.cardview.widget.CardView>
 
@@ -844,17 +930,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/po"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.8in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="Po/po or Pu/pu"
+                    android:text="@string/po_po_or_pu_pu"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
 
@@ -870,17 +959,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/ra"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.4in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="Ra/ra"
+                    android:text="@string/ra_ra"
                     android:fontFamily="@font/newake"/>
             </androidx.cardview.widget.CardView>
 
@@ -897,17 +989,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/re"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.7in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="Re/re or Ri/ri"
+                    android:text="@string/re_re_or_ri_ri"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
 
@@ -923,17 +1018,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/ro"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.75in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="Ro/ro or Ru/ru"
+                    android:text="@string/ro_ro_or_ru_ru"
                     android:fontFamily="@font/newake"/>
             </androidx.cardview.widget.CardView>
 
@@ -950,17 +1048,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/sa"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.4in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="Sa/sa"
+                    android:text="@string/sa_sa"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
 
@@ -976,17 +1077,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/se"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.7in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="Se/se or Si/si"
+                    android:text="@string/se_se_or_si_si"
                     android:fontFamily="@font/newake"/>
             </androidx.cardview.widget.CardView>
 
@@ -1003,17 +1107,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/so"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.78in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="So/so or Su/su"
+                    android:text="@string/so_so_or_su_su"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
 
@@ -1029,17 +1136,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/ta"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.4in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="Ta/ta"
+                    android:text="@string/ta_ta"
                     android:fontFamily="@font/newake"/>
             </androidx.cardview.widget.CardView>
 
@@ -1056,17 +1166,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/te"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.7in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="Te/te or Ti/ti"
+                    android:text="@string/te_te_or_ti_ti"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
 
@@ -1082,17 +1195,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/to"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.75in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="To/to or Tu/tu"
+                    android:text="@string/to_to_or_tu_tu"
                     android:fontFamily="@font/newake"/>
             </androidx.cardview.widget.CardView>
 
@@ -1109,17 +1225,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/wa"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.48in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="Wa/wa"
+                    android:text="@string/wa_wa"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
 
@@ -1135,17 +1254,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/we"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.82in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="We/we or Wi/wi"
+                    android:text="@string/we_we_or_wi_wi"
                     android:fontFamily="@font/newake"/>
             </androidx.cardview.widget.CardView>
 
@@ -1162,17 +1284,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/wo"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.9in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="Wo/wo or Wu/wu"
+                    android:text="@string/wo_wo_or_wu_wu"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
 
@@ -1188,17 +1313,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/ya"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.42in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="Ya/ya"
+                    android:text="@string/ya_ya"
                     android:fontFamily="@font/newake"/>
             </androidx.cardview.widget.CardView>
 
@@ -1215,17 +1343,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/ye"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.77in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="Ye/ye or Yi/yi"
+                    android:text="@string/ye_ye_or_yi_yi"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
 
@@ -1241,17 +1372,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/yo"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.82in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="Yo/yo or Yu/yu"
+                    android:text="@string/yo_yo_or_yu_yu"
                     android:fontFamily="@font/newake"/>
             </androidx.cardview.widget.CardView>
 
@@ -1265,12 +1399,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0in"
                     android:textSize="20sp"
                     android:textStyle="normal"
                     android:layout_gravity="center"
                     android:textColor="@color/white"
-                    android:text="Consonant - Katinig (ᜃᜆᜒᜈᜒᜄ᜔)"
+                    android:text="@string/consonant_katinig"
                     android:fontFamily="@font/newake"
                     />
             </androidx.cardview.widget.CardView>
@@ -1288,17 +1421,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/b"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.35in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="B/b"
+                    android:text="@string/b_b"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
 
@@ -1314,17 +1450,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/k"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.35in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="K/k"
+                    android:text="@string/k_k"
                     android:fontFamily="@font/newake"/>
             </androidx.cardview.widget.CardView>
 
@@ -1341,17 +1480,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/d"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.35in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="D/d"
+                    android:text="@string/d_d"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
 
@@ -1367,17 +1509,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/g"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.35in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="G/g"
+                    android:text="@string/g_g"
                     android:fontFamily="@font/newake"/>
             </androidx.cardview.widget.CardView>
 
@@ -1394,17 +1539,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/h"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.35in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="H/h"
+                    android:text="@string/h_h"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
 
@@ -1420,17 +1568,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/l"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.32in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="L/l"
+                    android:text="@string/l_l"
                     android:fontFamily="@font/newake"/>
             </androidx.cardview.widget.CardView>
 
@@ -1447,17 +1598,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/m"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.4in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="M/m"
+                    android:text="@string/m_m"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
 
@@ -1473,17 +1627,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/n"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.35in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="N/n"
+                    android:text="@string/n_n"
                     android:fontFamily="@font/newake"/>
             </androidx.cardview.widget.CardView>
 
@@ -1500,17 +1657,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/ng"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.48in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="Ng/ng"
+                    android:text="@string/ng_ng"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
 
@@ -1526,17 +1686,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/p"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.35in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="P/p"
+                    android:text="@string/p_p"
                     android:fontFamily="@font/newake"/>
             </androidx.cardview.widget.CardView>
 
@@ -1553,17 +1716,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/r"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.34in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="R/r"
+                    android:text="@string/r_r"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
 
@@ -1579,17 +1745,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/s"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.35in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="S/s"
+                    android:text="@string/s_s"
                     android:fontFamily="@font/newake"/>
             </androidx.cardview.widget.CardView>
 
@@ -1606,17 +1775,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/t"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.35in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="T/t"
+                    android:text="@string/t_t"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
 
@@ -1632,17 +1804,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/w"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.42in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"
-                    android:text="W/w"
+                    android:text="@string/w_w"
                     android:fontFamily="@font/newake"/>
             </androidx.cardview.widget.CardView>
 
@@ -1659,20 +1834,22 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:elevation="3dp"
-                    android:paddingLeft="-1in"
+                    android:importantForAccessibility="no"
+                    android:paddingStart="-170dp"
+                    android:paddingEnd="0dp"
                     android:src="@drawable/y"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="0.4in"
+                    android:paddingStart="200dp"
+                    android:paddingEnd="0dp"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:text="Y/y"
+                    android:text="@string/y_y"
                     android:fontFamily="@font/newake" />
             </androidx.cardview.widget.CardView>
-
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
