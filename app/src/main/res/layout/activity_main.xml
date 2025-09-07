@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:background="@color/bg_open">
+    android:background="@color/black">
 
     <Button
         android:id="@+id/button_start"
@@ -32,6 +32,7 @@
         android:id="@+id/imageView7"
         android:layout_width="89dp"
         android:layout_height="227dp"
+        android:contentDescription="@string/tap_here"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/button_start"
         app:layout_constraintHorizontal_bias="0.492"
@@ -106,7 +107,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="-130dp"
-        android:text="ᜃᜓᜇ᜔ᜎᜒᜆ᜔"
+        android:text="@string/kudlitbaybayinfont"
         android:textColor="@color/white"
         android:textSize="30sp"
         android:typeface="normal"
