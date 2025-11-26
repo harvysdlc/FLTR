@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 public class BaybayinTranslator {
 
-    private static final Map<String, String> baybayinMap = new HashMap<>();
+    static final Map<String, String> baybayinMap = new HashMap<>();
 
     static {
         // Vowels

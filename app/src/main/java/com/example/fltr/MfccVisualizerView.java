@@ -9,15 +9,15 @@ import android.view.View;
 
 public class MfccVisualizerView extends View {
 
-    private float[][] mfccData;  // Shape: [n_mfcc][n_frames]
+    private float[][] mfccData;  // original: [20][221]
     private int sampleRate = 44100;
     private int hopLength = 512;
-    private float minVal = -100f, maxVal = 100f; // dB range
+    private float minVal = -100f, maxVal = 100f;
 
     private Paint paint = new Paint();
     private Paint textPaint = new Paint();
-    private Paint labelPaint = new Paint();
-    private Paint framePaint = new Paint();
+    private Paint coeffPaint = new Paint();
+    private Paint timePaint = new Paint();
 
     public MfccVisualizerView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -36,14 +36,15 @@ public class MfccVisualizerView extends View {
         textPaint.setTextSize(28f);
         textPaint.setAntiAlias(true);
 
-        labelPaint.setColor(Color.LTGRAY);
-        labelPaint.setTextSize(20f);
-        labelPaint.setAntiAlias(true);
+        coeffPaint.setColor(Color.LTGRAY);
+        coeffPaint.setTextSize(22f);
+        coeffPaint.setAntiAlias(true);
+        coeffPaint.setTextAlign(Paint.Align.CENTER);
 
-        framePaint.setColor(Color.rgb(50, 50, 0));
-        framePaint.setTextSize(24f);
-        framePaint.setAntiAlias(true);
-        framePaint.setTextAlign(Paint.Align.RIGHT);
+        timePaint.setColor(Color.LTGRAY);
+        timePaint.setTextSize(20f);
+        timePaint.setAntiAlias(true);
+        timePaint.setTextAlign(Paint.Align.RIGHT);
     }
 
     public void setMfccData(float[][] data, int sampleRate, int hopLength) {
@@ -51,12 +52,15 @@ public class MfccVisualizerView extends View {
         this.sampleRate = sampleRate;
         this.hopLength = hopLength;
         normalizeMfcc();
-        invalidate(); // Redraw
+        invalidate();
     }
 
     private void normalizeMfcc() {
         minVal = Float.MAX_VALUE;
         maxVal = Float.MIN_VALUE;
+
+        if (mfccData == null) return;
+
         for (float[] row : mfccData) {
             for (float v : row) {
                 if (v < minVal) minVal = v;
@@ -65,57 +69,60 @@ public class MfccVisualizerView extends View {
         }
     }
 
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
         if (mfccData == null || mfccData.length == 0) return;
 
-        int nMfcc = mfccData.length;       // 13
-        int nFrames = mfccData[0].length;  // ~221
+        int nFrames = mfccData.length;       // 221
+        int nMfcc   = mfccData[0].length;    // 20
 
-        // Calculate margins for labels
-        int leftMargin = 50;  // space for coefficient labels
-        int bottomMargin = 40; // space for time labels
-        int topMargin = 40;    // space for title
+        // Layout margins
+        int leftMargin = 70;    // space for MFCC labels
+        int bottomMargin = 50;  // space for time labels
+        int topMargin = 40;     // title
 
-        float cellWidth = (float) (getWidth() - leftMargin) / nFrames;
+        float cellWidth  = (float) (getWidth() - leftMargin) / nFrames;
         float cellHeight = (float) (getHeight() - topMargin - bottomMargin) / nMfcc;
 
-        // Draw MFCC heatmap: time on X, coeff on Y
-        // FLIPPED: C0 now at the bottom (highest Y value)
-        for (int coeff = 0; coeff < nMfcc; coeff++) {
-            for (int frame = 0; frame < nFrames; frame++) {
-                float val = mfccData[coeff][frame];
+        // ----- DRAW HEATMAP (time horizontal, coeff vertical)
+        for (int frame = 0; frame < nFrames; frame++) {
+            for (int coeff = 0; coeff < nMfcc; coeff++) {
+
+                float val = mfccData[frame][coeff];
                 float norm = (val - minVal) / (maxVal - minVal);
-                int color = Color.HSVToColor(new float[]{240f - norm * 240f, 1f, 1f});
+
+                int color = Color.HSVToColor(new float[]{
+                        240f - norm * 240f, 1f, 1f
+                });
                 paint.setColor(color);
 
-                // X = time/frame position
-                // Y = coefficient position (flipped: nMfcc-coeff-1)
                 float left = leftMargin + frame * cellWidth;
-                float top = topMargin + (nMfcc - coeff - 1) * cellHeight;
+                float top  = topMargin + (nMfcc - coeff - 1) * cellHeight;
+
                 canvas.drawRect(left, top, left + cellWidth, top + cellHeight, paint);
             }
         }
 
-        // Draw time labels on X-axis every 10 frames
+        // ----- TIME LABELS (X-axis, bottom)
         for (int frame = 0; frame < nFrames; frame += 10) {
             float timeSec = (frame * hopLength) / (float) sampleRate;
             canvas.drawText(String.format("%.1fs", timeSec),
-                    leftMargin + frame * cellWidth, getHeight() - 10, textPaint);
+                    leftMargin + frame * cellWidth,
+                    getHeight() - 10,
+                    textPaint);
         }
 
-        // Label Y-axis with MFCC coefficient index (flipped)
+        // ----- MFCC LABELS (Y-axis)
         for (int coeff = 0; coeff < nMfcc; coeff++) {
-            // Use (nMfcc - coeff - 1) to flip the position
-            canvas.drawText("C" + coeff, 5,
-                    topMargin + (nMfcc - coeff - 1) * cellHeight + 20, labelPaint);
+            float y = topMargin + (nMfcc - coeff - 1) * cellHeight + 20;
+            canvas.drawText("C" + coeff, 10, y, textPaint);
         }
 
-        // Title
-        canvas.drawText("MFCC", 10, 30, textPaint);
-
-
+        // ----- TITLE
+        canvas.drawText("MFCC", leftMargin, 30, textPaint);
     }
+
 }

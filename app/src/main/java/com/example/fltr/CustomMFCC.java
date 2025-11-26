@@ -42,7 +42,7 @@ public class CustomMFCC {
         public final List<String> labels;
 
         public InferenceHelper(Context context) throws IOException {
-            MappedByteBuffer model = FileUtil.loadMappedFile(context, "model.tflite");
+            MappedByteBuffer model = FileUtil.loadMappedFile(context, "mixed_augmented.tflite");
             tflite = new Interpreter(model);
             labels = FileUtil.loadLabels(context, "labels.txt");
         }

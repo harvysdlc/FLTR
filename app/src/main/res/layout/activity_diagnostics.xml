@@ -9,23 +9,19 @@
     android:padding="16dp"
     tools:context="com.example.fltr.ScreenMain">
 
-    <!-- DIAGNOSTICS TOGGLE -->
-
-    <!-- BAYBAYIN OUTPUT -->
-
-    <!-- SYLLABLE BREAKDOWN -->
 
     <TextView
         android:id="@+id/baybayinView"
         android:layout_width="0dp"
         android:layout_height="57dp"
-        android:layout_marginTop="104dp"
+        android:layout_marginTop="24dp"
         android:background="@drawable/rounded_bg"
         android:fontFamily="@font/noto_sans_tagalog"
         android:gravity="center"
         android:text="ᜊᜌ᜔ᜌᜒᜈ᜔ Output"
         android:textColor="@color/gitna"
         android:textSize="30sp"
+
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -36,22 +32,89 @@
         android:id="@+id/syllableView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="ba - y - ba - yin"
-        android:textSize="25sp"
-        android:gravity="center"
+        android:layout_marginTop="8dp"
         android:fontFamily="@font/newake"
+        android:gravity="center"
+        android:text="ba - y - ba - yin"
         android:textColor="@color/black"
-        android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@id/baybayinView"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/baybayinView" />
 
-    <!-- DIAGNOSTICS CONTAINER -->
+    <TextView
+        android:id="@+id/transcribeView"
+        android:layout_width="379dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/newake"
+        android:gravity="center"
+        android:text="---"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.204"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/syllableView" />
 
-    <!-- RECORD BUTTON -->
+    <Button
+        android:id="@+id/record"
+        android:layout_width="375dp"
+        android:layout_height="53dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/rounded_bg"
+        android:fontFamily="@font/newake"
+        android:text="@string/tap_to_speak"
+        android:textAllCaps="false"
+        android:textColor="@color/gitna"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rtfView" />
 
-    <!-- 🟢 FLOATING CALIBRATION BANNER -->
+    <com.example.fltr.MfccVisualizerView
+        android:id="@+id/mfccView"
+        android:layout_width="384dp"
+        android:layout_height="137dp"
+        android:layout_marginTop="16dp"
+        android:background="#000000"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/transcribeView" />
 
+    <TextView
+        android:id="@+id/rtfView"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
+        android:background="#000000"
+        android:fontFamily="@font/newake"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="RTF: --"
+        android:textColor="#FFFFFF"
+        android:textSize="13sp"
+        app:layout_constraintTop_toBottomOf="@+id/mfccView"
+        tools:layout_editor_absoluteX="18dp" />
+
+    <TextView
+        android:id="@+id/calibrationStatusView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="18dp"
+        android:paddingVertical="8dp"
+        android:text="Calibrating..."
+        android:textSize="13sp"
+        android:textColor="@android:color/white"
+        android:background="@drawable/rounded_bg"
+        android:fontFamily="@font/newake"
+        android:gravity="center"
+        android:alpha="0"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/record"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="12dp" />
 
     <!-- SAVE BUTTON -->
 
@@ -60,46 +123,10 @@
     <!-- LEARN BUTTON -->
 
     <Button
-        android:id="@+id/record"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="188dp"
-        android:background="@drawable/rounded_bg"
-        android:fontFamily="@font/newake"
-        android:text="@string/tap_to_speak"
-        android:textAllCaps="false"
-        android:textColor="@color/gitna"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/syllableView" />
-
-    <TextView
-        android:id="@+id/calibrationStatusView"
-        android:layout_width="317dp"
-        android:layout_height="69dp"
-        android:layout_marginBottom="48dp"
-        android:alpha="1"
-
-        android:fontFamily="@font/newake"
-        android:gravity="center"
-        android:paddingHorizontal="18dp"
-        android:paddingVertical="8dp"
-        android:textColor="@android:color/black"
-        android:textSize="20sp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@id/record"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.922" />
-
-    <Button
         android:id="@+id/saveBtn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="12dp"
         android:background="@drawable/rounded_bg"
         android:fontFamily="@font/newake"
         android:text="Save Recording"
@@ -107,7 +134,7 @@
         android:textColor="@color/gitna"
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/record" />
 
@@ -115,7 +142,7 @@
         android:id="@+id/calibrateBtn"
         android:layout_width="160dp"
         android:layout_height="52dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/rounded_bg"
         android:fontFamily="@font/newake"
@@ -132,7 +159,7 @@
         android:layout_width="0dp"
         android:layout_height="52dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/rounded_bg"
         android:fontFamily="@font/newake"
         android:text="@string/learn_baybayin"
@@ -147,11 +174,11 @@
         android:id="@+id/diagnosticsBtn"
         android:layout_width="172dp"
         android:layout_height="46dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="12dp"
         android:background="@drawable/rounded_bg"
         android:fontFamily="@font/newake"
+        android:text="Return to simple mode"
         android:textAllCaps="false"
-        android:text="Open Diagnostics"
         android:textColor="@color/gitna"
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"

@@ -29,7 +29,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScreenMain extends AppCompatActivity {
+public class DiagnosticsScreen extends AppCompatActivity {
 
     private static final int SAMPLE_RATE = 44100;
     private static final int RECORDING_LENGTH = SAMPLE_RATE * 3; // 3 seconds
@@ -46,7 +46,7 @@ public class ScreenMain extends AppCompatActivity {
     private TextView baybayinView;
     private TextView syllableView;
 
-    private TextView calibrationStatusView;
+
 
     private boolean simpleMode = true; // SIMPLE MODE is default
     private float[][] paddedMfcc;
@@ -63,38 +63,30 @@ public class ScreenMain extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_screen_main);
+        setContentView(R.layout.activity_diagnostics);
 
         // UI bindings
         baybayinView = findViewById(R.id.baybayinView);
-        Button diagnosticsBtn = findViewById(R.id.diagnosticsBtn);
         syllableView = findViewById(R.id.syllableView);
-        calibrationStatusView = findViewById(R.id.calibrationStatusView);
+        Button diagnosticsBtn = findViewById(R.id.diagnosticsBtn);
         Button chart = findViewById(R.id.learn_chart);
         recordButton = findViewById(R.id.record);
-
+        resultView = findViewById(R.id.transcribeView);
+        mfccView = findViewById(R.id.mfccView);
+        rtfView = findViewById(R.id.rtfView);
         Button calibrateBtn = findViewById(R.id.calibrateBtn);
         saveButton = findViewById(R.id.saveBtn);
 
-        if (diagnosticsContainer != null) {
-            diagnosticsContainer.setVisibility(View.GONE);
-        }
-        if (simpleModeToggle != null) {
-            simpleModeToggle.setChecked(false);
-            simpleModeToggle.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                if (diagnosticsContainer != null) diagnosticsContainer.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-                simpleMode = !isChecked;
-            });
-        }
 
-        diagnosticsBtn.setOnClickListener(v -> {
-            startActivity(new Intent(ScreenMain.this, DiagnosticsScreen.class));
-        });
 
         // Chart / Learn Baybayin button
         chart.setOnClickListener(view -> {
-            Intent intent = new Intent(ScreenMain.this, Learn.class);
+            Intent intent = new Intent(DiagnosticsScreen.this, Learn.class);
             startActivity(intent);
+        });
+
+        diagnosticsBtn.setOnClickListener(v -> {
+            startActivity(new Intent(DiagnosticsScreen.this, ScreenMain.class));
         });
 
         // Save recording button
@@ -125,47 +117,22 @@ public class ScreenMain extends AppCompatActivity {
 
         // Calibrate button
         calibrateBtn.setOnClickListener(v -> {
-            calibrationStatusView.setVisibility(View.VISIBLE);
-            calibrationStatusView.setText("Calibrating... stay quiet");
 
+            resultView.setText("Calibrating... stay quiet");
 
             audioEngine.startCalibration(new AudioEngine.CalibrationCallback() {
                 @Override
                 public void onCalibrationComplete(int threshold) {
-                    runOnUiThread(() -> {
-                        showCalibrationStatus("Calibration complete. Threshold = " + threshold);
-                        // Optionally hide after 2 seconds
-                        calibrationStatusView.postDelayed(() -> hideCalibrationStatus(), 2000);
-                    });
+                    runOnUiThread(() -> resultView.setText("Calibration complete.\nThreshold = " + threshold));
                 }
 
                 @Override
                 public void onCalibrationError(Exception e) {
-                    runOnUiThread(() -> {
-                        showCalibrationStatus("Calibration failed: " + e.getMessage());
-                        calibrationStatusView.postDelayed(() -> hideCalibrationStatus(), 2000);
-                    });
+                    runOnUiThread(() -> resultView.setText("Calibration failed: " + e.getMessage()));
                 }
             });
         });
     }
-
-    private void showCalibrationStatus(String text) {
-        calibrationStatusView.setText(text);
-        calibrationStatusView.setVisibility(View.VISIBLE);
-        calibrationStatusView.animate()
-                .alpha(1f)
-                .setDuration(400)
-                .setListener(null);
-    }
-
-    private void hideCalibrationStatus() {
-        calibrationStatusView.animate()
-                .alpha(0f)
-                .setDuration(400)
-                .withEndAction(() -> calibrationStatusView.setVisibility(View.INVISIBLE));
-    }
-
 
     private void startRecording() {
         isRecording = true;
@@ -199,15 +166,34 @@ public class ScreenMain extends AppCompatActivity {
                 // Translate to Baybayin
                 String baybayinOutput = BaybayinTranslator.translateToBaybayin(predictedLabel);
 
+                // Audio durations
+                float audioDurationSec = (float) audioData.length / AudioEngine.SAMPLE_RATE;
+                float frameDurationSec = (float) mfccResult.originalFrameCount * CustomMFCC.HOP_SIZE / AudioEngine.SAMPLE_RATE;
 
+                // Compute RTF safely
+                float rtf = audioDurationSec > 0f ? processingTimeSec / audioDurationSec : 0f;
+
+                final float finalRtf = rtf;
+                final float finalAudioDurationSec = audioDurationSec;
+                final float finalProcessingTimeSec = processingTimeSec;
 
                 // Syllable segmentation
                 final String syllables = segmentSyllables(predictedLabel);
 
                 runOnUiThread(() -> {
                     // Update UI
-                   baybayinView.setText(baybayinOutput);
+                    rtfView.setText(
+                            "Audio Duration: " + String.format("%.6f", finalAudioDurationSec) +
+                                    "\nProcessing Time: " + String.format("%.6f", finalProcessingTimeSec) +
+                                    "\nRTF: " + String.format("%.6f", finalRtf)
+                    );
 
+                    if (paddedMfcc != null && mfccView != null) {
+                        mfccView.setMfccData(paddedMfcc, AudioEngine.SAMPLE_RATE, CustomMFCC.HOP_SIZE);
+                    }
+
+                    resultView.setText("Prediction: " + predictedLabel + "\nConfidence: " + confidence);
+                    baybayinView.setText(baybayinOutput);
 
                     if (syllableView != null) {
                         syllableView.setText(syllables);

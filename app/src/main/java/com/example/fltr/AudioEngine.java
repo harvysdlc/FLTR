@@ -10,14 +10,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AudioEngine {
+
     public static final int SAMPLE_RATE = 44100;
     private static final int BUFFER_SIZE = 1024;
-    private static final int SILENCE_THRESHOLD = 5000;
+
+    // Default fallback thresholds
+    private static final int DEFAULT_SILENCE_THRESHOLD = 5000;
     private static final int TRIM_THRESHOLD = 3000;
-    private static final int SILENCE_DURATION = 20;
+    private static final int SILENCE_DURATION = 20; // ~20 buffers ≈ 0.4 sec
+
+    private int adaptiveThreshold = -1; // -1 = not calibrated
 
     private boolean isRecording;
     private RecordingCallback callback;
+    private CalibrationCallback calibrationCallback;
+
     private byte[] lastPcmBytes;
 
     public interface RecordingCallback {
@@ -25,19 +32,82 @@ public class AudioEngine {
         void onError(Exception e);
     }
 
+    public interface CalibrationCallback {
+        void onCalibrationComplete(int threshold);
+        void onCalibrationError(Exception e);
+    }
+
+    // ---------------------------------------------------------
+    // CALIBRATION MODE (1–2 seconds of background sampling)
+    // ---------------------------------------------------------
+    public void startCalibration(CalibrationCallback cb) {
+        this.calibrationCallback = cb;
+        new Thread(this::calibrationLoop).start();
+    }
+
+    private void calibrationLoop() {
+        @SuppressLint("MissingPermission") AudioRecord recorder = new AudioRecord(
+                MediaRecorder.AudioSource.MIC,
+                SAMPLE_RATE,
+                AudioFormat.CHANNEL_IN_MONO,
+                AudioFormat.ENCODING_PCM_16BIT,
+                AudioRecord.getMinBufferSize(SAMPLE_RATE,
+                        AudioFormat.CHANNEL_IN_MONO,
+                        AudioFormat.ENCODING_PCM_16BIT)
+        );
+
+        short[] buffer = new short[BUFFER_SIZE];
+        List<Integer> amplitudes = new ArrayList<>();
+
+        recorder.startRecording();
+        long startTime = System.currentTimeMillis();
+
+        while (System.currentTimeMillis() - startTime < 1500) { // 1.5 sec calibration
+            int read = recorder.read(buffer, 0, BUFFER_SIZE);
+            if (read > 0) {
+                int max = getMaxAmplitude(buffer);
+                amplitudes.add(max);
+            }
+        }
+
+        recorder.stop();
+        recorder.release();
+
+        if (amplitudes.isEmpty()) {
+            calibrationCallback.onCalibrationError(new Exception("Calibration failed: no samples."));
+            return;
+        }
+
+        int avg = 0;
+        for (int a : amplitudes) avg += a;
+        avg /= amplitudes.size();
+
+        // Adaptive threshold = avg * multiplier
+        adaptiveThreshold = (int) (avg * 2.5f);
+
+        Log.d("AudioEngine", "Calibration complete. Avg=" + avg +
+                " Threshold=" + adaptiveThreshold);
+
+        calibrationCallback.onCalibrationComplete(adaptiveThreshold);
+    }
+
+    // ---------------------------------------------------------
+    // MAIN RECORDING LOGIC
+    // ---------------------------------------------------------
     public void startRecording(RecordingCallback callback) {
         this.callback = callback;
         new Thread(this::recordLoop).start();
     }
 
     private void recordLoop() {
-        @SuppressLint("MissingPermission") AudioRecord recorder = new AudioRecord(
-                MediaRecorder.AudioSource.MIC,
-                SAMPLE_RATE,
-                AudioFormat.CHANNEL_IN_MONO,
-                AudioFormat.ENCODING_PCM_16BIT,
-                AudioRecord.getMinBufferSize(SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT)
-        );
+        @SuppressLint("MissingPermission") AudioRecord recorder =
+                new AudioRecord(MediaRecorder.AudioSource.MIC,
+                        SAMPLE_RATE,
+                        AudioFormat.CHANNEL_IN_MONO,
+                        AudioFormat.ENCODING_PCM_16BIT,
+                        AudioRecord.getMinBufferSize(SAMPLE_RATE,
+                                AudioFormat.CHANNEL_IN_MONO,
+                                AudioFormat.ENCODING_PCM_16BIT));
 
         recorder.startRecording();
         isRecording = true;
@@ -47,7 +117,20 @@ public class AudioEngine {
         boolean triggered = false;
         int silenceCounter = 0;
 
+        int activeThreshold = (adaptiveThreshold > 0)
+                ? adaptiveThreshold
+                : DEFAULT_SILENCE_THRESHOLD;
+
+        long startTime = System.currentTimeMillis();
+        long maxRecordTimeMs = 5000; // 5 seconds max
+
         while (isRecording) {
+
+            if (System.currentTimeMillis() - startTime > maxRecordTimeMs) {
+                Log.d("AudioEngine", "Max 5 sec reached. Ending.");
+                break;
+            }
+
             int read = recorder.read(buffer, 0, BUFFER_SIZE);
             if (read <= 0) continue;
 
@@ -55,7 +138,8 @@ public class AudioEngine {
             System.arraycopy(buffer, 0, chunk, 0, read);
 
             int max = getMaxAmplitude(chunk);
-            boolean silent = max < SILENCE_THRESHOLD;
+
+            boolean silent = max < activeThreshold;
 
             if (!triggered && !silent) {
                 triggered = true;
@@ -63,11 +147,12 @@ public class AudioEngine {
             }
 
             if (triggered) {
-                for (short val : chunk) recordedData.add(val);
+                for (short s : chunk) recordedData.add(s);
+
                 silenceCounter = silent ? silenceCounter + 1 : 0;
 
                 if (silenceCounter > SILENCE_DURATION) {
-                    Log.d("AudioEngine", "Silence detected. Stopping recording.");
+                    Log.d("AudioEngine", "Silence detected. Stopping.");
                     break;
                 }
             }
@@ -77,8 +162,9 @@ public class AudioEngine {
         recorder.release();
 
         short[] rawPcm = toShortArray(recordedData);
+
         if (rawPcm.length == 0) {
-            callback.onError(new IllegalStateException("No audio recorded."));
+            callback.onError(new Exception("No audio recorded."));
             return;
         }
 
@@ -86,38 +172,40 @@ public class AudioEngine {
         short[] trimmed = trimSilenceStart(normalized);
 
         if (trimmed.length < 1024) {
-            callback.onError(new IllegalStateException("Trimmed audio too short."));
+            callback.onError(new Exception("Audio too short after trim."));
             return;
         }
 
-        // Save for WAV export
         lastPcmBytes = shortsToBytes(trimmed);
-
         callback.onRecordingFinished(trimmed);
     }
 
+    // ---------------------------------------------------------
+    // UTILITY METHODS
+    // ---------------------------------------------------------
     private int getMaxAmplitude(short[] buffer) {
         int max = 0;
         for (short val : buffer) {
-            if (Math.abs(val) > max) max = Math.abs(val);
+            max = Math.max(max, Math.abs(val));
         }
         return max;
     }
 
     private short[] toShortArray(List<Short> list) {
-        short[] result = new short[list.size()];
-        for (int i = 0; i < list.size(); i++) result[i] = list.get(i);
-        return result;
+        short[] arr = new short[list.size()];
+        for (int i = 0; i < list.size(); i++) arr[i] = list.get(i);
+        return arr;
     }
 
-    private short[] normalize(short[] input) {
-        int max = getMaxAmplitude(input);
-        if (max == 0) return input;
+    private short[] normalize(short[] audio) {
+        int max = getMaxAmplitude(audio);
+        if (max == 0) return audio;
 
-        float normFactor = 32767.0f / max;
-        short[] out = new short[input.length];
-        for (int i = 0; i < input.length; i++) {
-            out[i] = (short) Math.max(Math.min(input[i] * normFactor, 32767), -32768);
+        float factor = 32767f / max;
+        short[] out = new short[audio.length];
+
+        for (int i = 0; i < audio.length; i++) {
+            out[i] = (short) Math.max(Math.min(audio[i] * factor, 32767), -32768);
         }
         return out;
     }
@@ -130,22 +218,26 @@ public class AudioEngine {
                 break;
             }
         }
-        int trimmedLength = audio.length - start;
-        short[] trimmed = new short[trimmedLength];
-        System.arraycopy(audio, start, trimmed, 0, trimmedLength);
+        int len = audio.length - start;
+        short[] trimmed = new short[len];
+        System.arraycopy(audio, start, trimmed, 0, len);
         return trimmed;
     }
 
     private byte[] shortsToBytes(short[] data) {
-        byte[] bytes = new byte[data.length * 2];
+        byte[] out = new byte[data.length * 2];
         for (int i = 0; i < data.length; i++) {
-            bytes[i * 2] = (byte) (data[i] & 0xff);
-            bytes[i * 2 + 1] = (byte) ((data[i] >> 8) & 0xff);
+            out[i * 2] = (byte) (data[i] & 0xFF);
+            out[i * 2 + 1] = (byte) ((data[i] >> 8) & 0xFF);
         }
-        return bytes;
+        return out;
     }
 
     public byte[] getLastTrimmedPcm() {
         return lastPcmBytes;
+    }
+
+    public int getAdaptiveThreshold() {
+        return adaptiveThreshold;
     }
 }

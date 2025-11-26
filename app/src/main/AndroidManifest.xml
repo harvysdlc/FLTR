@@ -24,6 +24,11 @@
             android:name=".ScreenMain"
             android:exported="false" />
         <activity
+            android:name=".DiagnosticsScreen"
+            android:label="Diagnostics"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -32,6 +37,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".Learn"
             android:exported="true"> <!-- Make sure to include this line -->
             <intent-filter>

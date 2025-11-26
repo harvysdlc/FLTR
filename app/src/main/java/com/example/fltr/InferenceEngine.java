@@ -15,7 +15,7 @@ public class InferenceEngine {
 
     public InferenceEngine(Context context) {
         try {
-            MappedByteBuffer model = FileUtil.loadMappedFile(context, "final_model.tflite"); // ✅ load model from assets
+            MappedByteBuffer model = FileUtil.loadMappedFile(context, "mixed_augmented.tflite"); // ✅ load model from assets
             tflite = new Interpreter(model);
             labels = FileUtil.loadLabels(context, "labels.txt"); // ✅ load labels from assets
         } catch (IOException e) {
